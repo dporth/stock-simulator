@@ -26,6 +26,7 @@ class UserDAO():
             user = User(first_name=first_name, last_name=last_name)
             session.add(user)
             session.flush()
+            return user.user_id
 
 if __name__ == "__main__":
     user = UserDAO()
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     last_name = 'Doe'
     address_id = 1
 
-    user.create_user(first_name, last_name, address_id)
+    print(user.create_user(first_name, last_name, address_id))
 
     # Get user functionality
     results = user.get_user()

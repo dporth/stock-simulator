@@ -26,4 +26,4 @@ class User(Base):
     #address_id = Column(Integer, ForeignKey('parent.id'))
 
     def __repr__(self):
-        return "<User(first_name='%s', last_name='%s')>" % (self.first_name, self.last_name)
+        return "<User(user_id='%s', first_name='%s', last_name='%s')>" % (self.user_id, self.first_name, self.last_name)
