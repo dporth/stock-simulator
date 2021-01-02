@@ -6,10 +6,22 @@ Then users will have access to end of day stock market data which shows the actu
 ![](./assets/data_model.png)  
 
 ## Features
+### Database
+- [x] Data model
+- [] Create ETL jobs from data model
+
+### Backend
+Currently, the backend is programmed with Python
+
+- [x] Implement database connection design
+- [x] Create user dao
+- [] Create account dao
+- [] Purchase stock at today's real-time price
 - [] Last updated date
 - [] Next update countdown
-- [] Data model
+
+### Frontent
 - [] Frontend (TBD)
-- [] Backend (TBD)
-- [] Create ETL jobs from data model
 - [] Purchase stock at today's real-time price
+- [] Last updated date
+- [] Next update countdown

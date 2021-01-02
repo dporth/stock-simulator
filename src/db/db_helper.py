@@ -1,31 +1,36 @@
 import pyodbc
+import sqlalchemy as sa
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from contextlib import contextmanager
 import sys
 [sys.path.append(i) for i in ['.', '..','../../']]
 from src.config import config
 
-class DBHelper:
-    
-    __connection = None
-    __cursor = None
+class DBHelper(object):
 
     def __init__(self):
-        __db_config = config['mssql']
-        self.__connection = pyodbc.connect(f"driver=ODBC Driver 17 for SQL Server;server={__db_config['server']}; " \
-                        f"database={__db_config['database']};uid={__db_config['user']};pwd={__db_config['password']}; " \
-                        f"Trusted_Connection=yes;")
-        self.__cursor = self.__connection.cursor()
+        _db_config = config['mssql']
+        self._schema = _db_config['schema']
+        self._engine = sa.create_engine(f"mssql+pyodbc://{_db_config['user']}:{_db_config['password']}@{_db_config['server']}/{_db_config['database']}?driver=ODBC Driver 17 for SQL Server?Trusted_Connection=yes’")
+        self._session = sessionmaker(bind=self._engine)
 
-    def query(self, query, params):
-        if params:
-            self.__cursor.execute(query, params)
-        else:
-            self.__cursor.execute(query)
-        return self.__cursor
+    @contextmanager
+    def session_scope(self):
+        """Provide a transactional scope around a series of operations."""
+        session = self._session()
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
-    def close(self):
-        self.__connection.close()
-
-db = DBHelper()
-c = db.query('SELECT * FROM sys.tables;', '')
-for row in c:
-    print(row)
+if __name__ == "__main__":
+    db = DBHelper()
+    with db.session_scope() as session:
+        result = session.execute("select * from sys.tables;")
+        for row in result:
+            print(row)

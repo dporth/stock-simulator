@@ -1,8 +1,10 @@
 {
     "mssql":{
         "server": "localhost",
+        "port": "1433",
         "database": "PERSONAL",
         "user": "stockmarketservice",
-        "password": "test123"
+        "password": "test123",
+        "schema": "stockmarket"
     }
 }
