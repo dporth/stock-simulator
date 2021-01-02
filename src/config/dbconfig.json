@@ -1,0 +1,8 @@
+{
+    "mssql":{
+        "server": "localhost",
+        "database": "PERSONAL",
+        "user": "stockmarketservice",
+        "password": "test123"
+    }
+}
