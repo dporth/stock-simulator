@@ -14,24 +14,30 @@ class StockDAO():
             return session.query(Stock)
 
     def delete_stock(self, symbol):
-        """Deletes all records in the stock table that have the symbol specified."""
+        """Deletes all records in the stock table that have the symbol specified. Returns the stock id of all records deleted."""
         with self._db.session_scope() as session:
-            session.query(Stock).filter_by(symbol=symbol).delete()
+            marked_to_delete = []
+            results = session.query(Stock.stock_id).filter_by(symbol=symbol)
+            for row in results:
+                marked_to_delete.append(row[0])
+            stock = session.query(Stock).filter_by(symbol=symbol).delete()
             session.flush()
+            return marked_to_delete
 
     # todo return stock id
     def create_stock(self, symbol):
-        """Creates a record in the stock table with the symbol specified"""
+        """Creates a record in the stock table with the symbol specified. Returns the stock id of the new record."""
         with self._db.session_scope() as session:
             stock = Stock(symbol=symbol)
             session.add(stock)
             session.flush()
+            return stock.stock_id
 
 if __name__ == "__main__":
     stock = StockDAO()
     # Insert stock functionality
     symbol = 'VOO'
-    stock.create_stock(symbol)
+    print(stock.create_stock(symbol))
 
     # Get stock functionality
     results = stock.get_stock()
@@ -39,4 +45,4 @@ if __name__ == "__main__":
         print(row)
 
     # Delete stock funcitonality
-    stock.delete_stock(symbol)
+    print(stock.delete_stock(symbol))

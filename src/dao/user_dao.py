@@ -14,10 +14,15 @@ class UserDAO():
             return session.query(User)
 
     def delete_user(self, first_name, last_name):
-        """Deletes all records in the user table that have the first and last name specified."""
+        """Deletes all records in the user table that have the first and last name specified. Returns the user id of all records deleted."""
         with self._db.session_scope() as session:
-            session.query(User).filter_by(first_name=first_name, last_name=last_name).delete()
+            marked_to_delete = []
+            results = session.query(User.user_id).filter_by(first_name=first_name, last_name=last_name)
+            for row in results:
+                marked_to_delete.append(row[0])
+            user = session.query(User).filter_by(first_name=first_name, last_name=last_name).delete()
             session.flush()
+            return marked_to_delete
 
     # todo return id
     def create_user(self, first_name, last_name, address_id):
@@ -43,4 +48,4 @@ if __name__ == "__main__":
         print(row)
 
     # Delete user funcitonality
-    user.delete_user(first_name, last_name)
+    print(user.delete_user(first_name, last_name))

@@ -14,6 +14,8 @@ class DBHelper(object):
         self._schema = _db_config['schema']
         self._engine = sa.create_engine(f"mssql+pyodbc://{_db_config['user']}:{_db_config['password']}@{_db_config['server']}/{_db_config['database']}?driver=ODBC Driver 17 for SQL Server?Trusted_Connection=yes’")
         self._session = sessionmaker(bind=self._engine)
+        #Base.metadata.drop_all(bind=self._engine)
+        #Base.metadata.create_all(bind=self._engine)
 
     @contextmanager
     def session_scope(self):
