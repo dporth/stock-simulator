@@ -11,7 +11,6 @@ CREATE TABLE [stockmarket].[account](
 	[share_amount] [numeric](38, 6) NULL,
 	[user_id] [int] NULL,
 	[stock_id] [int] NULL,
-	[account_value_id] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[account_id] ASC
@@ -25,6 +24,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [stockmarket].[account_value](
 	[account_value_id] [int] IDENTITY(1,1) NOT NULL,
+	[account_id] [int] NULL,
 	[valid_from] [datetime] NULL,
 	[valid_to] [datetime] NULL,
 	[usd_account_amount] [numeric](38, 6) NULL,
@@ -126,8 +126,8 @@ PRIMARY KEY CLUSTERED
 GO
 ALTER TABLE [stockmarket].[account_value] ADD  DEFAULT (getdate()) FOR [valid_from]
 GO
-ALTER TABLE [stockmarket].[account]  WITH CHECK ADD FOREIGN KEY([account_value_id])
-REFERENCES [stockmarket].[account_value] ([account_value_id])
+ALTER TABLE [stockmarket].[account_value]  WITH CHECK ADD FOREIGN KEY([account_id])
+REFERENCES [stockmarket].[account] ([account_id])
 GO
 ALTER TABLE [stockmarket].[account]  WITH CHECK ADD FOREIGN KEY([stock_id])
 REFERENCES [stockmarket].[stock] ([stock_id])
@@ -147,3 +147,8 @@ GO
 ALTER TABLE [stockmarket].[user]  WITH CHECK ADD FOREIGN KEY([address_id])
 REFERENCES [stockmarket].[address] ([address_id])
 GO
+
+INSERT INTO stockmarket.city(city_name) values('Louisville');
+INSERT INTO stockmarket.country(country_name) values('United States');
+INSERT INTO stockmarket.state(state_name) values('New Yokr');
+INSERT INTO stockmarket.stock(symbol) values('MU');

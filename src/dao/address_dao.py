@@ -39,9 +39,9 @@ if __name__ == "__main__":
     # Insert address functionality
     street = '6th way place'
     postal_code = '123456'
-    country_id = '2'
-    state_id = '2'
-    city_id = '2'
+    country_id = '1'
+    state_id = '1'
+    city_id = '1'
 
 
     id = address.create_address(street, postal_code, country_id, state_id, city_id)
