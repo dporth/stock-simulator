@@ -8,7 +8,7 @@ Then users will have access to end of day stock market data which shows the actu
 ## Features
 ### Database
 - [x] Data model
-- [] Create ETL jobs from data model
+- [x] Create ETL jobs from data model
 
 ### Backend
 Currently, the backend is programmed with Python
@@ -16,13 +16,13 @@ Currently, the backend is programmed with Python
 - [x] Implement database connection design
 - [x] Create table dao's
 - [x] Create Flask application
-- [] Flask application endpoints
-- [] Purchase stock at today's real-time price
-- [] Last updated date
-- [] Next update countdown
+- [x] Flask application endpoints
+- [ ] Purchase stock at today's real-time price
+- [ ] Last updated date
+- [ ] Next update countdown
 
 ### Frontent
-- [] Frontend (TBD)
-- [] Purchase stock at today's real-time price
-- [] Last updated date
-- [] Next update countdown
+- [ ] Frontend (TBD)
+- [ ] Purchase stock at today's real-time price
+- [ ] Last updated date
+- [ ] Next update countdown
