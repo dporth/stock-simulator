@@ -148,7 +148,10 @@ ALTER TABLE [stockmarket].[user]  WITH CHECK ADD FOREIGN KEY([address_id])
 REFERENCES [stockmarket].[address] ([address_id])
 GO
 
-INSERT INTO stockmarket.city(city_name) values('Louisville');
+INSERT INTO stockmarket.city(city_name) values('Boise');
 INSERT INTO stockmarket.country(country_name) values('United States');
-INSERT INTO stockmarket.state(state_name) values('New Yokr');
-INSERT INTO stockmarket.stock(symbol) values('MU');
+INSERT INTO stockmarket.state(state_name) values('Idaho');
+INSERT INTO stockmarket.stock(symbol) values('VOO');
+INSERT INTO stockmarket.address(street,postal_code, country_id, state_id, city_id) values ('5437 South Begonia Place', '83716', '1', '1', '1')
+INSERT INTO stockmarket.[user](first_name, last_name, address_id) values('Darwin', 'Porth', '1')
+INSERT INTO stockmarket.[account](usd_amount, share_amount, stock_id, user_id) values ('500', '1.463151', '1', '1')

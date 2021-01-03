@@ -13,11 +13,11 @@ class Stock(Base):
     __tablename__ = 'stock'
     __table_args__ = {'schema' : _db._schema}
     stock_id = Column(Integer, primary_key=True)
-    name = Column(String)
+    symbol = Column(String)
     children = relationship("Account")
 
     def __repr__(self):
-        return "<Stock(stock_id='%s', name='%s')>" % (self.stock_id, self.name)
+        return "<Stock(stock_id='%s', symbol='%s')>" % (self.stock_id, self.symbol)
 
 class User(Base):
     __tablename__ = 'user'

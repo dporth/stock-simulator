@@ -8,7 +8,7 @@ class StockDAO():
     def __init__(self):
         self._db = DBHelper()
 
-    def get_stock(self):
+    def get_stocks(self):
         """Returns all stocks."""
         with self._db.session_scope() as session:
             return session.query(Stock)
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     stock = StockDAO()
     # Insert stock functionality
     symbol = 'VOO'
-    print(stock.create_stock(symbol))
+    print(stock.create_stocks(symbol))
 
     # Get stock functionality
     results = stock.get_stock()

@@ -3,6 +3,8 @@ import datetime
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
 from src.db.models import AccountValue
+from sqlalchemy import and_
+
 
 
 class AccountValueDAO():
@@ -34,14 +36,15 @@ class AccountValueDAO():
             session.flush()
             return account_value.account_value_id
 
-    def expire_account_value(self, account_value_id, account_id, usd_account_amount):
-        """Expires the old account value specified by account value id and creates a new record in the account value table with the other parameters specified. Returns the account value id of the record created."""
+    def expire_account_value(self,account_id, usd_account_amount):
+        """Expires the old account value specified by account id and creates a new record in the account value table with the other parameter specified. Returns the account value id of the record created."""
 
         with self._db.session_scope() as session:
             # Expire old record
-            account_value = session.query(AccountValue).filter_by(account_value_id=account_value_id).first()
-            account_value.valid_to = datetime.datetime.utcnow()
-            session.commit()
+            account_value = session.query(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_to==None)).first()
+            if(account_value):
+                account_value.valid_to = datetime.datetime.utcnow()
+                session.commit()
         
         # Insert new record
         return self.create_account_value(account_id, usd_account_amount)
@@ -66,7 +69,7 @@ if __name__ == "__main__":
 
     # Expire old record
     #usd_account_amount2 = 505.162997
-    #id2 = account_value.expire_account_value(2, account_id, usd_account_amount2)
+    #id2 = account_value.expire_account_value(account_id, usd_account_amount2)
     #print(id2)
 
     # Get account_value functionality
