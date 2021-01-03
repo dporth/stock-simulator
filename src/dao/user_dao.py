@@ -8,7 +8,7 @@ class UserDAO():
     def __init__(self):
         self._db = DBHelper()
 
-    def get_user(self):
+    def get_users(self):
         """Returns all users."""
         with self._db.session_scope() as session:
             return session.query(User)
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     id = user.create_user(first_name, last_name, address_id)
     print(id)
     # Get user functionality
-    results = user.get_user()
+    results = user.get_users()
     for row in results:
         print(row)
 

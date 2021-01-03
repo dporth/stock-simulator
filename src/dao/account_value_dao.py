@@ -1,4 +1,5 @@
 import sys
+import datetime
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
 from src.db.models import AccountValue
@@ -33,6 +34,18 @@ class AccountValueDAO():
             session.flush()
             return account_value.account_value_id
 
+    def expire_account_value(self, account_value_id, account_id, usd_account_amount):
+        """Expires the old account value specified by account value id and creates a new record in the account value table with the other parameters specified. Returns the account value id of the record created."""
+
+        with self._db.session_scope() as session:
+            # Expire old record
+            account_value = session.query(AccountValue).filter_by(account_value_id=account_value_id).first()
+            account_value.valid_to = datetime.datetime.utcnow()
+            session.commit()
+        
+        # Insert new record
+        return self.create_account_value(account_id, usd_account_amount)
+
 if __name__ == "__main__":
     account_value = AccountValueDAO()
 
@@ -50,3 +63,13 @@ if __name__ == "__main__":
 
     # Delete account_value funcitonality
     print(account_value.delete_account_value(id))
+
+    # Expire old record
+    #usd_account_amount2 = 505.162997
+    #id2 = account_value.expire_account_value(2, account_id, usd_account_amount2)
+    #print(id2)
+
+    # Get account_value functionality
+    #results = account_value.get_account_value()
+    #for row in results:
+    #    print(row)
