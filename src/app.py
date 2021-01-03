@@ -1,9 +1,9 @@
 from flask import Flask
-from api.api import api_bp
+from users.users import users_bp
 import config
 
 app = Flask(__name__)
-app.register_blueprint(api_bp, url_prefix='/api')
+app.register_blueprint(users_bp, url_prefix='/users')
 
 
 if __name__ == "__main__":
