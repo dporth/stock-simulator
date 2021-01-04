@@ -13,6 +13,11 @@ class StockDAO():
         with self._db.session_scope() as session:
             return session.query(Stock)
 
+    def get_stock(self, symbol):
+        """Returns all stocks that have the symbol provided."""
+        with self._db.session_scope() as session:
+            return session.query(Stock).filter_by(symbol=symbol)
+
     def delete_stock(self, symbol):
         """Deletes all records in the stock table that have the symbol specified. Returns the stock id of all records deleted."""
         with self._db.session_scope() as session:

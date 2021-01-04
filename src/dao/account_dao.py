@@ -1,7 +1,7 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
-from src.db.models import Account
+from src.db.models import Account, User, Stock
 
 
 class AccountDAO():
@@ -9,11 +9,16 @@ class AccountDAO():
     def __init__(self):
         self._db = DBHelper()
 
-    def get_account(self):
-        """Returns all accounts."""
+    def get_accounts(self):
+        """Returns all accounts with their users and stockss."""
         with self._db.session_scope() as session:
-            return session.query(Account)
+            return session.query(Account, User, Stock).join(User).join(Stock)
 
+    def get_account_by_id(self, account_id):
+        """Returns all accounts with their address that have the account id provided."""
+        with self._db.session_scope() as session:
+            return session.query(Account, User, Stock).filter_by(account_id=account_id).join(User).join(Stock)
+    
     def delete_account(self, account_id):
         """Deletes all records in the account table that have account id specified. Returns the account id of all records deleted."""
         with self._db.session_scope() as session:
@@ -51,4 +56,4 @@ if __name__ == "__main__":
         print(row)
 
     # Delete account funcitonality
-    print(account.delete_account(id))
+    print(account.delete_accounts(id))

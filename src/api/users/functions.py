@@ -3,10 +3,11 @@ from src.dao.state_dao import StateDAO
 from src.dao.city_dao import CityDAO
 from src.dao.country_dao import CountryDAO
 from src.dao.address_dao import AddressDAO
-from flask import jsonify, abort
 
 def get_users():
     """Returns a list of all users from the user table"""
+    response = {}
+
     user_dao = UserDAO()
     users = []
     result = user_dao.get_users()
@@ -14,9 +15,10 @@ def get_users():
         user = {}
         user['first_name'] = row.User.first_name
         user['last_name'] = row.User.last_name
-        user['Address'] = {'Street': row.Address.street, 'Postal Code': row.Address.postal_code, 'City': row.City.city_name, 'State': row.State.state_name, 'Country': row.Country.country_name}
+        user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
         users.append(user)
-    return users
+    response['data'] = users
+    return response
 
 def get_user_by_id(user_id):
     """Returns all users specified by the provided user id."""
@@ -27,16 +29,15 @@ def get_user_by_id(user_id):
     user_dao = UserDAO()
     users = []
     result = user_dao.get_user_by_id(user_id)
-    print(len(result.all()))
     if len(result.all()) != 0:
         for row in result:
             user = {}
             user['first_name'] = row.User.first_name
             user['last_name'] = row.User.last_name
-            user['Address'] = {'Street': row.Address.street, 'Postal Code': row.Address.postal_code, 'City': row.City.city_name, 'State': row.State.state_name, 'Country': row.Country.country_name}
+            user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
             users.append(user)
         response['data'] = users
-        return users
+        return response
     else:
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
@@ -69,7 +70,7 @@ def create_user(json):
         state_id = result.state_id
     else:
         # state not found
-        error_response['message'] = "Could not find state provided. Check your syntax."
+        error_response['message'] = "Could not find state provided. Check your request."
         error_response['code'] = '400'
         response['error'] = error_response
         return response
@@ -79,7 +80,7 @@ def create_user(json):
         country_id = result.country_id
     else:
         # country not found
-        error_response['message'] = "Could not find country provided. Check your syntax."
+        error_response['message'] = "Could not find country provided. Check your request."
         error_response['code'] = '400'
         response['error'] = error_response
         return response
@@ -89,7 +90,7 @@ def create_user(json):
         city_id = result.city_id
     else:
         # city not found
-        error_response['message'] = "Could not find city provided. Check your syntax."
+        error_response['message'] = "Could not find city provided. Check your request."
         error_response['code'] = '400'
         response['error'] = error_response
         return response

@@ -1,9 +1,9 @@
 from flask import Flask, request, Response, jsonify, abort, Blueprint
 from .functions import *
 
-api_bp = Blueprint('blueprint', __name__)
+users_bp = Blueprint('users', __name__)
 
-@api_bp.route('/users', methods=['GET', 'POST'])
+@users_bp.route('/users', methods=['GET', 'POST'])
 def users():
     """
     GET   - returns all users
@@ -22,10 +22,8 @@ def users():
             return jsonify(response), response['error']['code']
         else:
             return jsonify(response), 200
-    else:
-        return jsonify("Wrong request method.")
 
-@api_bp.route('/users/<int:user_id>', methods=['GET'])
+@users_bp.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     """
     GET   - returns the users with the user id
@@ -36,5 +34,3 @@ def get_user(user_id):
             return jsonify(response), response['error']['code']
         else:
             return jsonify(response), 200
-    else:
-        return jsonify("Wrong request method.")
