@@ -1,7 +1,7 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
-from src.db.models import User
+from src.db.models import User, Address, State, City, Country
 
 class UserDAO():
 
@@ -9,9 +9,15 @@ class UserDAO():
         self._db = DBHelper()
 
     def get_users(self):
-        """Returns all users."""
+        """Returns all users with their address."""
         with self._db.session_scope() as session:
-            return session.query(User)
+            return session.query(Address, User, State, City, Country).join(User).join(State).join(City).join(Country)
+    
+    def get_user_by_id(self, user_id):
+        """Returns all users with their address that have the user id provided."""
+        with self._db.session_scope() as session:
+            return session.query(Address, User, State, City, Country).join(User).filter_by(user_id=user_id).join(State).join(City).join(Country)
+    
 
     def delete_user(self, user_id):
         """Deletes all records in the user table that have the user id specified. Returns the user id of all records deleted."""

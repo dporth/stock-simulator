@@ -2,6 +2,7 @@ import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
 from src.db.models import Address
+from sqlalchemy import and_
 
 
 class AddressDAO():
@@ -9,11 +10,16 @@ class AddressDAO():
     def __init__(self):
         self._db = DBHelper()
 
-    def get_address(self):
-        """Returns all addresss."""
+    def get_addresses(self):
+        """Returns all addresses."""
         with self._db.session_scope() as session:
             return session.query(Address)
-
+    
+    def get_address(self, street, postal_code):
+        """Returns all addresses that have the address street and postal code provided."""
+        with self._db.session_scope() as session:
+            return session.query(Address).filter(and_(Address.postal_code==postal_code, Address.street==street))
+    
     def delete_address(self, address_id):
         """Deletes all records in the address table that have address id specified. Returns the address id of all records deleted."""
         with self._db.session_scope() as session:
@@ -47,9 +53,14 @@ if __name__ == "__main__":
     id = address.create_address(street, postal_code, country_id, state_id, city_id)
     print(id)
     # Get address functionality
-    results = address.get_address()
+    results = address.get_addresses()
     for row in results:
         print(row)
 
     # Delete address funcitonality
     print(address.delete_address(id))
+
+    # Get a specific address
+    results = address.get_address('1 Centre St, New York', '10007')
+    for row in results:
+        print(row)

@@ -155,3 +155,6 @@ INSERT INTO stockmarket.stock(symbol) values('VOO');
 INSERT INTO stockmarket.address(street,postal_code, country_id, state_id, city_id) values ('5437 South Begonia Place', '83716', '1', '1', '1')
 INSERT INTO stockmarket.[user](first_name, last_name, address_id) values('Darwin', 'Porth', '1')
 INSERT INTO stockmarket.[account](usd_amount, share_amount, stock_id, user_id) values ('500', '1.463151', '1', '1')
+INSERT INTO stockmarket.state(state_name) values('New York')
+INSERT INTO stockmarket.city(city_name) values('New York')
+INSERT INTO stockmarket.address(street, postal_code, city_id, state_id, country_id) values('1 Centre St, New York', '10007', '2', '2', '1')

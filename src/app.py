@@ -1,9 +1,11 @@
+import sys
+[sys.path.append(i) for i in ['.', '..','../']]
 from flask import Flask
-from users.users import users_bp
+from api.api import api_bp
 import config
 
 app = Flask(__name__)
-app.register_blueprint(users_bp, url_prefix='/users')
+app.register_blueprint(api_bp, url_prefix='/api')
 
 
 if __name__ == "__main__":

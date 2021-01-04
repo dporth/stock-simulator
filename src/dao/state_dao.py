@@ -8,10 +8,15 @@ class StateDAO():
     def __init__(self):
         self._db = DBHelper()
 
-    def get_state(self):
+    def get_states(self):
         """Returns all states."""
         with self._db.session_scope() as session:
             return session.query(State)
+
+    def get_state(self, state_name):
+        """Returns all states that have the state name provided."""
+        with self._db.session_scope() as session:
+            return session.query(State).filter_by(state_name=state_name)
 
     def delete_state(self, state_name):
         """Deletes all records in the state table that have the state_name specified. Returns the state id of all records deleted."""
@@ -36,13 +41,18 @@ class StateDAO():
 if __name__ == "__main__":
     state = StateDAO()
     # Insert state functionality
-    state_name = 'New York'
+    state_name = 'California'
     print(state.create_state(state_name))
 
     # Get state functionality
-    results = state.get_state()
+    results = state.get_states()
     for row in results:
         print(row)
 
     # Delete state funcitonality
     print(state.delete_state(state_name))
+
+    # Get a specific state
+    results = state.get_state('New York')
+    for row in results:
+        print(row)
