@@ -44,7 +44,7 @@ if __name__ == '__main__':
     for each in result.json()['data']:
         eod_close_data[each['symbol']] = each['close']
     eod_close_json = json.dumps(eod_close_data)
-    
+
     # Calculate new stock value based off share and closing value
     # Then update marek value table
     results = etl.get_account_stocks()

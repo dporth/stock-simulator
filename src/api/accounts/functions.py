@@ -56,11 +56,18 @@ def create_account(json):
     stock_dao = StockDAO()
     user_dao = UserDAO()
 
-    # TODO check data type of request json 
     usd_amount = json['usd_amount']
     share_amount = json['share_amount']
     symbol = json['symbol']
     user_id = json['user_id']
+
+    # Ensure usd and share amount are not strings
+    if not isinstance(usd_amount, (int, float)) or not isinstance(share_amount, (int, float)):
+        # not a number
+        error_response['message'] = "The request json contains a string when a number is expected. Check your request."
+        error_response['code'] = '400'
+        response['error'] = error_response
+        return response
 
     # Get stock id
     result = stock_dao.get_stock(symbol).first()
