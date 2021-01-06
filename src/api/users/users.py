@@ -4,6 +4,7 @@ from .functions import *
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/users', methods=['GET', 'POST'])
+@requires_auth
 def users():
     """
     GET   - returns all users
@@ -24,6 +25,7 @@ def users():
             return jsonify(response), 200
 
 @users_bp.route('/users/<int:user_id>', methods=['GET'])
+@requires_auth
 def get_user(user_id):
     """
     GET   - returns the users with the user id
