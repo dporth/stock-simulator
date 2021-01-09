@@ -7,7 +7,6 @@ def get_accounts():
     response = {}
 
     account_dao = AccountDAO()
-    accounts = []
     result = account_dao.get_accounts()
     return process_response(result)
 
@@ -18,7 +17,6 @@ def get_account_by_id(account_id):
     error_response = {}
 
     account_dao = AccountDAO()
-    accounts = []
     result = account_dao.get_account_by_id(account_id)
     if len(result.all()) != 0:
         return process_response(result)
@@ -88,6 +86,7 @@ def create_account(json):
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
+    accounts = []
     for row in query:
         account = {}
         account['account_id'] = row.Account.account_id

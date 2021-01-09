@@ -9,7 +9,6 @@ def get_users():
     response = {}
 
     user_dao = UserDAO()
-    users = []
     result = user_dao.get_users()
     return process_response(result)
 
@@ -20,7 +19,6 @@ def get_user_by_id(user_id):
     error_response = {}
 
     user_dao = UserDAO()
-    users = []
     result = user_dao.get_user_by_id(user_id)
     if len(result.all()) != 0:
         return process_response(result)
@@ -105,6 +103,7 @@ def create_user(json):
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
+    users = []
     for row in query:
         user = {}
         user['user_id'] = row.User.user_id
