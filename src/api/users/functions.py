@@ -11,16 +11,7 @@ def get_users():
     user_dao = UserDAO()
     users = []
     result = user_dao.get_users()
-    for row in result:
-        user = {}
-        user['user_id'] = row.User.user_id
-        user['first_name'] = row.User.first_name
-        user['last_name'] = row.User.last_name
-        user['email'] = row.User.email
-        user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
-        users.append(user)
-    response['data'] = users
-    return response
+    return process_response(result)
 
 def get_user_by_id(user_id):
     """Returns all users specified by the provided user id."""
@@ -32,16 +23,7 @@ def get_user_by_id(user_id):
     users = []
     result = user_dao.get_user_by_id(user_id)
     if len(result.all()) != 0:
-        for row in result:
-            user = {}
-            user['user_id'] = row.User.user_id
-            user['first_name'] = row.User.first_name
-            user['last_name'] = row.User.last_name
-            user['email'] = row.User.email
-            user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
-            users.append(user)
-        response['data'] = users
-        return response
+        return process_response(result)
     else:
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
@@ -118,4 +100,18 @@ def create_user(json):
     successful_response['address_id'] = new_address_id
     response['data'] = successful_response
     
+    return response
+
+def process_response(response):
+    """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
+    response = {}
+    for row in result:
+        user = {}
+        user['user_id'] = row.User.user_id
+        user['first_name'] = row.User.first_name
+        user['last_name'] = row.User.last_name
+        user['email'] = row.User.email
+        user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
+        users.append(user)
+    response['data'] = users
     return response

@@ -25,7 +25,7 @@ def get_stock_by_symbol(symbol):
         return response
 
 def process_response(response):
-    """Takes a stock query and formats the attributes in the query. Returns the formatted attributes."""
+    """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
     for row in result:
         stock = {}

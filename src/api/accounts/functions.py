@@ -9,16 +9,7 @@ def get_accounts():
     account_dao = AccountDAO()
     accounts = []
     result = account_dao.get_accounts()
-    for row in result:
-        account = {}
-        account['account_id'] = row.Account.account_id
-        account['usd_amount'] = str(row.Account.usd_amount)
-        account['share_amount'] = str(row.Account.share_amount)
-        account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
-        account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
-        accounts.append(account)
-    response['data'] = accounts
-    return response
+    return process_response(result)
 
 def get_account_by_id(account_id):
     """Returns all accounts specified by the provided account id."""
@@ -30,16 +21,7 @@ def get_account_by_id(account_id):
     accounts = []
     result = account_dao.get_account_by_id(account_id)
     if len(result.all()) != 0:
-        for row in result:
-            account = {}
-            account['account_id'] = row.Account.account_id
-            account['usd_amount'] = str(row.Account.usd_amount)
-            account['share_amount'] = str(row.Account.share_amount)
-            account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
-            account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
-            accounts.append(account)
-        response['data'] = accounts
-        return response
+        return process_response(result)
     else:
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
@@ -101,4 +83,18 @@ def create_account(json):
     successful_response['share_amount'] = share_amount
     response['data'] = successful_response
     
+    return response
+
+def process_response(response):
+    """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
+    response = {}
+    for row in result:
+        account = {}
+        account['account_id'] = row.Account.account_id
+        account['usd_amount'] = str(row.Account.usd_amount)
+        account['share_amount'] = str(row.Account.share_amount)
+        account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
+        account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
+        accounts.append(account)
+    response['data'] = accounts
     return response
