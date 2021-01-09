@@ -13,7 +13,7 @@ class StockDAO():
         with self._db.session_scope() as session:
             return session.query(Stock)
 
-    def get_stock(self, symbol):
+    def get_stock_by_symbol(self, symbol):
         """Returns all stocks that have the symbol provided."""
         with self._db.session_scope() as session:
             return session.query(Stock).filter_by(symbol=symbol)

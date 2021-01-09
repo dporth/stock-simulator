@@ -13,6 +13,7 @@ def get_users():
     result = user_dao.get_users()
     for row in result:
         user = {}
+        user['user_id'] = row.User.user_id
         user['first_name'] = row.User.first_name
         user['last_name'] = row.User.last_name
         user['email'] = row.User.email
@@ -33,6 +34,7 @@ def get_user_by_id(user_id):
     if len(result.all()) != 0:
         for row in result:
             user = {}
+            user['user_id'] = row.User.user_id
             user['first_name'] = row.User.first_name
             user['last_name'] = row.User.last_name
             user['email'] = row.User.email
@@ -113,6 +115,7 @@ def create_user(json):
     successful_response['first_name'] = first_name
     successful_response['last_name'] = last_name
     successful_response['email'] = email
+    successful_response['address_id'] = new_address_id
     response['data'] = successful_response
     
     return response
