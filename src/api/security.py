@@ -3,50 +3,43 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
+from flask import Flask, request, Response, jsonify, abort, Blueprint
 
 AUTH0_DOMAIN = 'dev-v9e55hvh.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'https://simustock/api'
 
-
-class AuthError(Exception):
-    """
-        This class, AuthError exists to represent errors originated in this module.
-    """
-    def __init__(self, error, status_code):
-        self.error = error
-        self.status_code = status_code
-
-
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
+    response = {}
+    error_response = {}
     if not auth:
-        raise AuthError({
-            'code': 'authorization_header_missing',
-            'description': 'Authorization header is expected.'
-        }, 401)
+        error_response['message'] = 'Authorization header is expected. Authorization header missing.'
+        error_response['code'] = '401'
+        response['error'] = error_response
+        return jsonify(response), 401
 
     parts = auth.split()
 
     if parts[0].lower() != 'bearer':
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must start with "Bearer".'
-        }, 401)
+        error_response['message'] = 'Authorization header must start with "Bearer". Invalid header.'
+        error_response['code'] = '401'
+        response['error'] = error_response
+        return jsonify(response), 401
 
     elif len(parts) == 1:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Token not found.'
-        }, 401)
+        error_response['message'] = 'Token not found. Invalid header.'
+        error_response['code'] = '401'
+        response['error'] = error_response
+        return jsonify(response), 401
 
     elif len(parts) > 2:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must be bearer token.'
-        }, 401)
+        error_response['message'] = 'Authorization header must be bearer token. Invalid header.'
+        error_response['code'] = '401'
+        response['error'] = error_response
+        return jsonify(response), 401
 
     token = parts[1]
     return token
@@ -61,6 +54,8 @@ def requires_auth(f):
         token = get_token_auth_header()
         jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
         jwks = json.loads(jsonurl.read())
+        response = {}
+        error_response = {}
         try:
             unverified_header = jwt.get_unverified_header(token)
             rsa_key = {}
@@ -74,10 +69,10 @@ def requires_auth(f):
                         'e': key['e']
                     }
         except Exception:
-            raise AuthError({
-                    'code': 'invalid_header',
-                    'description': 'Unable to parse authentication token.'
-                }, 400)
+            error_response['message'] = 'Unable to parse authentication token. Invalid header.'
+            error_response['code'] = '400'
+            response['error'] = error_response
+            return jsonify(response), 400
         if rsa_key:
             try:
                 payload = jwt.decode(
@@ -89,28 +84,28 @@ def requires_auth(f):
                 )
 
             except jwt.ExpiredSignatureError:
-                raise AuthError({
-                    'code': 'token_expired',
-                    'description': 'Token expired.'
-                }, 401)
+                error_response['message'] = 'Token expired.'
+                error_response['code'] = '401'
+                response['error'] = error_response
+                return jsonify(response), 401
             except jwt.JWTClaimsError:
-                raise AuthError({
-                    'code': 'invalid_claims',
-                    'description': 'Incorrect claims. Please, check the audience and issuer.'
-                }, 401)
+                error_response['message'] = 'Incorrect claims. Please, check the audience and issuer.'
+                error_response['code'] = '401'
+                response['error'] = error_response
+                return jsonify(response), 401
             except Exception:
-                raise AuthError({
-                    'code': 'invalid_header',
-                    'description': 'Unable to parse authentication token.'
-                }, 400)
+                error_response['message'] = 'Unable to parse authentication token. Invalid header.'
+                error_response['code'] = '400'
+                response['error'] = error_response
+                return jsonify(response), 400
 
             _request_ctx_stack.top.current_user = payload
             return f(*args, **kwargs)
 
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Unable to find the appropriate key.'
-        }, 400)
+        error_response['message'] = 'Unable to find the appropriate key. Invalid header.'
+        error_response['code'] = '400'
+        response['error'] = error_response
+        return jsonify(response), 400
 
     return decorated
     

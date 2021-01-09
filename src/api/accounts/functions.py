@@ -85,10 +85,10 @@ def create_account(json):
     
     return response
 
-def process_response(response):
+def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
-    for row in result:
+    for row in query:
         account = {}
         account['account_id'] = row.Account.account_id
         account['usd_amount'] = str(row.Account.usd_amount)

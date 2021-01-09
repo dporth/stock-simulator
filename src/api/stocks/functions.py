@@ -24,10 +24,10 @@ def get_stock_by_symbol(symbol):
         response['error'] = error_response
         return response
 
-def process_response(response):
+def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
-    for row in result:
+    for row in query:
         stock = {}
         stock['stock_id'] = row.stock_id
         stock['symbol'] = row.symbol

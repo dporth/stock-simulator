@@ -102,10 +102,10 @@ def create_user(json):
     
     return response
 
-def process_response(response):
+def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
-    for row in result:
+    for row in query:
         user = {}
         user['user_id'] = row.User.user_id
         user['first_name'] = row.User.first_name
