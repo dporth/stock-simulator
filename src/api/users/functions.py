@@ -15,6 +15,7 @@ def get_users():
         user = {}
         user['first_name'] = row.User.first_name
         user['last_name'] = row.User.last_name
+        user['email'] = row.User.email
         user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
         users.append(user)
     response['data'] = users
@@ -34,6 +35,7 @@ def get_user_by_id(user_id):
             user = {}
             user['first_name'] = row.User.first_name
             user['last_name'] = row.User.last_name
+            user['email'] = row.User.email
             user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
             users.append(user)
         response['data'] = users
@@ -58,6 +60,7 @@ def create_user(json):
 
     first_name = json['first_name']
     last_name = json['last_name']
+    email = json['email']
     street = json['street']
     postal_code = json['postal_code']
     city = json['city']
@@ -104,11 +107,12 @@ def create_user(json):
         new_address_id = address_dao.create_address(street, postal_code, country_id, state_id, city_id)
 
     # Create user
-    new_user = user_dao.create_user(first_name, last_name, new_address_id)
+    new_user = user_dao.create_user(first_name, last_name, email, new_address_id)
 
     successful_response['user_id'] = new_user
     successful_response['first_name'] = first_name
     successful_response['last_name'] = last_name
+    successful_response['email'] = email
     response['data'] = successful_response
     
     return response

@@ -31,10 +31,10 @@ class UserDAO():
             return marked_to_delete
 
     # todo return id
-    def create_user(self, first_name, last_name, address_id):
+    def create_user(self, first_name, last_name, email, address_id):
         """Creates a record in the user table with the first name, last name, and address id specified. Returns the user id"""
         with self._db.session_scope() as session:
-            user = User(first_name=first_name, last_name=last_name, address_id=address_id)
+            user = User(first_name=first_name, last_name=last_name, email=email, address_id=address_id)
             session.add(user)
             session.flush()
             return user.user_id
@@ -44,9 +44,10 @@ if __name__ == "__main__":
     # Insert user functionality
     first_name = 'John'
     last_name = 'Doe'
+    email = 'JohnDoe@gmail.com'
     address_id = 1
 
-    id = user.create_user(first_name, last_name, address_id)
+    id = user.create_user(first_name, last_name, email, address_id)
     print(id)
     # Get user functionality
     results = user.get_users()

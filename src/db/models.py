@@ -25,11 +25,12 @@ class User(Base):
     user_id = Column(Integer, primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
+    email = Column(String)
     address_id = Column(Integer, ForeignKey(f'{_db._schema}.address.address_id'))
     children = relationship("Account")
 
     def __repr__(self):
-        return "<User(user_id='%s', first_name='%s', last_name='%s', address_id='%s')>" % (self.user_id, self.first_name, self.last_name, self.address_id)
+        return "<User(user_id='%s', first_name='%s', last_name='%s', email='%s', address_id='%s')>" % (self.user_id, self.first_name, self.last_name, self.email, self.address_id)
 
 class City(Base):
     __tablename__ = 'city'
