@@ -1,4 +1,5 @@
 from flask import Flask, request, Response, jsonify, abort, Blueprint
+from src.api.security import requires_auth, requires_scope
 from .functions import *
 
 stocks_bp = Blueprint('stocks', __name__)

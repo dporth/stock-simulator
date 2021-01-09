@@ -113,6 +113,7 @@ def requires_auth(f):
         }, 400)
 
     return decorated
+    
 def requires_scope(required_scope):
     """Determines if the required scope is present in the Access Token
     Args:
