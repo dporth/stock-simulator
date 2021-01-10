@@ -27,12 +27,12 @@ def users():
 
 @users_bp.route('/users/<int:id>', methods=['GET'])
 @requires_auth
-def get_user(user_id):
+def get_user(id):
     """
     GET   - returns the users with the user id
     """
     if request.method == 'GET':
-        response = get_user_by_id(user_id)
+        response = get_user_by_id(id)
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:

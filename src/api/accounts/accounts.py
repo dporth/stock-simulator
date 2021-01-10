@@ -26,14 +26,14 @@ def accounts():
         else:
             return jsonify(response), 200
 
-@accounts_bp.route('/accounts/<int:account_id>', methods=['GET'])
+@accounts_bp.route('/accounts/<int:id>', methods=['GET'])
 @requires_auth
-def get_account(account_id):
+def get_account(id):
     """
     GET   - returns the accounts with the account id
     """
     if request.method == 'GET':
-        response = get_account_by_id(account_id)
+        response = get_account_by_id(id)
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:

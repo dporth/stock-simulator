@@ -1,4 +1,73 @@
 paths:
+  /api/accounts:
+    get:
+      summary: Returns all accounts with their users
+      tags:
+        - Accounts
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Accounts"
+    post:
+      summary: Creates a new account
+      tags:
+        - Accounts
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      - in: body
+        name: body
+        required: true
+        properties:
+          usd_amount:
+            type: "number"
+          share_amount:
+            type: "number"
+          symbol:
+            type: "string"
+          user_id:
+            type: "integer"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Create Accounts"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/400 Error"
+  /api/accounts/{id}:
+      get:
+        summary: Returns all accounts belonging to the specified ID
+        tags:
+          - Accounts
+        parameters:
+        - in: path
+          name: "id"
+          description: "An account ID"
+          required: true
+          type: integer
+        - in: header
+          name: Authorization
+          required: true
+          description: "Bearer <token>"
+        responses:
+          200:
+            description: "OK"
+            schema:
+              $ref: "#/definitions/Accounts"
+          404:
+            description: "Not Found"
+            schema:
+              $ref: "#/definitions/404 Error"
   /api/stocks:
     get:
       summary: Returns all stocks
@@ -92,28 +161,20 @@ paths:
         properties:
           first_name:
             type: "string"
-            example: "John"
           last_name:
             type: "string"
-            example: "Doe"
           email:
             type: "string"
-            example: "JohnDoe@gmail.com"
           street:
             type: "string"
-            example: "1 Centre St"
           postal_code:
             type: "string"
-            example: "10007"
           city:
             type: "string"
-            example: "New York"
           state:
             type: "string"
-            example: "New York"
           country:
             type: "string"
-            example: "United States"
       responses:
         200:
           description: "OK"
@@ -163,11 +224,37 @@ definitions:
           type: "object"
           properties:
             stock_id:
-              type: "int"
+              type: "integer"
               example: "1"
             symbol:
               type: "string"
               example: "TSLA"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Create Accounts:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            account_id:
+              type: "integer"
+              example: "4"
+            stock_id:
+              type: "integer"
+              example: "1"
+            user_id:
+              type: "integer"
+              example: "1"
+            usd_amount:
+              type: "number"
+              example: "500.000000"
+            share_amount:
+              type: "number"
+              example: "1.463151"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
@@ -180,7 +267,7 @@ definitions:
           type: "object"
           properties:
             user_id:
-              type: "int"
+              type: "integer"
               example: "1"
             first_name:
               type: "string"
@@ -192,8 +279,49 @@ definitions:
               type: "string"
               example: "JohnDoe@gmail.com"
             address_id:
-              type: "int"
+              type: "integer"
               example: "1"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Accounts:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            account_id:
+              type: "integer"
+              example: "1"
+            share_amount:
+              type: "number"
+              example: "1.463151"
+            stock:
+              type: "object"
+              properties:
+                stock_id:
+                  type: "integer"
+                  example: "1"
+                symbol:
+                  type: "string"
+                  example: "TSLA"
+            usd_amount:
+              type: "number"
+              example: "500.000000"
+            user:
+              type: "object"
+              properties:
+                user_id:
+                  type: "integer"
+                  example: "1"
+                first_name:
+                  type: "string"
+                  example: "John"
+                last_name:
+                  type: "string"
+                  example: "Doe"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
@@ -206,7 +334,7 @@ definitions:
           type: "object"
           properties:
             user_id:
-              type: "int"
+              type: "integer"
               example: "1"
             first_name:
               type: "string"

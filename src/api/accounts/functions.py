@@ -1,6 +1,7 @@
 from src.dao.user_dao import UserDAO
 from src.dao.account_dao import AccountDAO
 from src.dao.stock_dao import StockDAO
+from datetime import datetime
 
 def get_accounts():
     """Returns a list of all accounts from the account table."""
@@ -24,6 +25,7 @@ def get_account_by_id(account_id):
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
 
@@ -44,20 +46,22 @@ def create_account(json):
     # Ensure usd and share amount are not strings
     if not isinstance(usd_amount, (int, float)) or not isinstance(share_amount, (int, float)):
         # not a number
-        error_response['message'] = "The request json contains a string when a number is expected. Check your request."
+        error_response['message'] = "The request json contains a string when a number is expected. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
     # Get stock id
-    result = stock_dao.get_stock(symbol).first()
+    result = stock_dao.get_stock_by_symbol(symbol).first()
     if result:
         stock_id = result.stock_id
     else:
         # stock not found
-        error_response['message'] = "Could not find stock provided. Check your request."
+        error_response['message'] = "Could not find stock provided. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
     # Check to see if user exists
@@ -66,9 +70,10 @@ def create_account(json):
         user_id = result.User.user_id
     else:
         # user not found
-        error_response['message'] = "Could not find user provided. Check your request."
+        error_response['message'] = "Could not find user provided. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
     # Create account
@@ -80,7 +85,7 @@ def create_account(json):
     successful_response['usd_amount'] = usd_amount
     successful_response['share_amount'] = share_amount
     response['data'] = successful_response
-    
+    response['timestamp'] = datetime.utcnow()
     return response
 
 def process_response(query):
@@ -96,4 +101,5 @@ def process_response(query):
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
         accounts.append(account)
     response['data'] = accounts
+    response['timestamp'] = datetime.utcnow()
     return response
