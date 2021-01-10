@@ -45,15 +45,15 @@ if __name__ == "__main__":
     usd_amount = '341.73'
     share_amount = '1.463151'
     stock_id = '1'
-    user_id = '1'
+    user_id = '4'
 
 
     id = account.create_account(usd_amount, share_amount, stock_id, user_id)
     print(id)
     # Get account functionality
-    results = account.get_account()
+    results = account.get_accounts()
     for row in results:
         print(row)
 
     # Delete account funcitonality
-    print(account.delete_accounts(id))
+    print(account.delete_account(id))

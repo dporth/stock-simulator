@@ -5,28 +5,9 @@ Then users will have access to end of day stock market data which shows the actu
 
 ![](./assets/data_model.png)  
 
-## Features
-### Database
-- [x] Data model
-- [x] Create ETL jobs from data model
-
-### Backend
-Currently, the backend is programmed with Python
-
-- [x] Implement database connection design
-- [x] Create table dao's
-- [x] Create Flask application
-- [x] Flask application endpoints
-- [ ] Purchase stock at today's real-time price
-- [ ] Last updated date
-- [ ] Next update countdown
-
-### Frontent
-- [ ] Frontend (TBD)
-- [ ] Purchase stock at today's real-time price
-- [ ] Last updated date
-- [ ] Next update countdown
-
+## API
+### Swagger
+The docs for this API are generated with Swagger. If a local instance of this program is running on your machine, you can visit http://127.0.0.1:5000/apidocs/#/ to see the docs.
 
 ## Auth0 Implementation
 ### Facilate storing of user data

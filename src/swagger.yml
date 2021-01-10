@@ -46,13 +46,13 @@ paths:
             $ref: "#/definitions/400 Error"
   /api/accounts/{id}:
       get:
-        summary: Returns all accounts belonging to the specified ID
+        summary: Returns all accounts belonging to the specified id
         tags:
           - Accounts
         parameters:
         - in: path
           name: "id"
-          description: "An account ID"
+          description: "An account id"
           required: true
           type: integer
         - in: header
@@ -109,13 +109,13 @@ paths:
             $ref: "#/definitions/404 Error"
   /api/users/{id}:
     get:
-      summary: Returns all users with their address belonging to the specified ID
+      summary: Returns all users with their address belonging to the specified id
       tags:
         - Users
       parameters:
       - in: path
         name: "id"
-        description: "A user ID"
+        description: "A user id"
         required: true
         type: integer
       - in: header
@@ -127,6 +127,53 @@ paths:
           description: "OK"
           schema:
             $ref: "#/definitions/Users"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
+    put:
+      summary: Updates all attributes present in the request body for the user belonging to the specified id
+      tags:
+        - Users
+      parameters:
+      - in: path
+        name: "id"
+        description: "A user id"
+        required: true
+        type: integer
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      - in: body
+        name: body
+        required: false
+        properties:
+          first_name:
+            type: "string"
+          last_name:
+            type: "string"
+          email:
+            type: "string"
+          street:
+            type: "string"
+          postal_code:
+            type: "string"
+          city:
+            type: "string"
+          state:
+            type: "string"
+          country:
+            type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Users"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/400 Error"
         404:
           description: "Not Found"
           schema:

@@ -25,7 +25,7 @@ def users():
         else:
             return jsonify(response), 200
 
-@users_bp.route('/users/<int:id>', methods=['GET'])
+@users_bp.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 @requires_auth
 def get_user(id):
     """
@@ -33,6 +33,18 @@ def get_user(id):
     """
     if request.method == 'GET':
         response = get_user_by_id(id)
+        if 'error' in response:
+            return jsonify(response), response['error']['code']
+        else:
+            return jsonify(response), 200
+    elif request.method == 'PUT':
+        response = update_user(id, request.get_json())
+        if 'error' in response:
+            return jsonify(response), response['error']['code']
+        else:
+            return jsonify(response), 200
+    elif request.method == 'DELETE':
+        response = delete_user(id)
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
