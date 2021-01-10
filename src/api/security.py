@@ -24,19 +24,19 @@ def get_token_auth_header():
     parts = auth.split()
 
     if parts[0].lower() != 'bearer':
-        error_response['message'] = 'Authorization header must start with "Bearer". Invalid header.'
+        error_response['message'] = 'Authorization header must start with "Bearer". Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
         return jsonify(response), 401
 
     elif len(parts) == 1:
-        error_response['message'] = 'Token not found. Invalid header.'
+        error_response['message'] = 'Token not found. Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
         return jsonify(response), 401
 
     elif len(parts) > 2:
-        error_response['message'] = 'Authorization header must be bearer token. Invalid header.'
+        error_response['message'] = 'Authorization header must be bearer token. Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
         return jsonify(response), 401
@@ -69,7 +69,7 @@ def requires_auth(f):
                         'e': key['e']
                     }
         except Exception:
-            error_response['message'] = 'Unable to parse authentication token. Invalid header.'
+            error_response['message'] = 'Unable to parse authentication token. Invalid request.'
             error_response['code'] = '400'
             response['error'] = error_response
             return jsonify(response), 400
@@ -94,7 +94,7 @@ def requires_auth(f):
                 response['error'] = error_response
                 return jsonify(response), 401
             except Exception:
-                error_response['message'] = 'Unable to parse authentication token. Invalid header.'
+                error_response['message'] = 'Unable to parse authentication token. Invalid request.'
                 error_response['code'] = '400'
                 response['error'] = error_response
                 return jsonify(response), 400
@@ -102,7 +102,7 @@ def requires_auth(f):
             _request_ctx_stack.top.current_user = payload
             return f(*args, **kwargs)
 
-        error_response['message'] = 'Unable to find the appropriate key. Invalid header.'
+        error_response['message'] = 'Unable to find the appropriate key. Invalid request.'
         error_response['code'] = '400'
         response['error'] = error_response
         return jsonify(response), 400

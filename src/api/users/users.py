@@ -4,7 +4,7 @@ from .functions import *
 
 users_bp = Blueprint('users', __name__)
 
-@users_bp.route('/users', methods=['GET', 'POST'])
+@users_bp.route('/users')
 @requires_auth
 def users():
     """

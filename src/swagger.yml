@@ -1,0 +1,119 @@
+paths:
+  /api/users/{user_id}:
+    get:
+      summary: Returns all users with the specified ID
+      tags:
+        - Users
+      parameters:
+      - in: path
+        name: "user_id"
+        description: "The user ID of the users to return"
+        required: true
+        type: integer
+        default: "1"
+      - in: header
+        name: Authorization
+        required: true
+        default: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Users"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/Users"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/400 Error"
+  /api/users:
+    get:
+      summary: Returns all users
+      tags:
+        - Users
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Users"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/400 Error"
+    post:
+      summary: Creates a new user
+      tags:
+        - Users
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Users"
+definitions:
+  404 Error:
+    type: "object"
+    properties:
+      Error:
+          type: "object"
+          properties:
+            message:
+              type: "string"
+              example: "The requested resource was not found."
+            code:
+              type: "string"
+              example: "404"
+  400 Error:
+    type: "object"
+    properties:
+      Error:
+          type: "object"
+          properties:
+            message:
+              type: "string"
+              example: "Unable to parse authentication token. Invalid request."
+            code:
+              type: "string"
+              example: "400"
+  Users:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            user_id:
+              type: "int"
+              example: "1"
+            first_name:
+              type: "string"
+              example: "John"
+            last_name:
+              type: "string"
+              example: "Doe"
+            email:
+              type: "string"
+              example: "JohnDoe@gmail.com"
+            address:
+              type: "object"
+              properties:
+                  street:
+                    type: "string"
+                    example: "12345 West Ram Way"
+                  postal_code:
+                    type: "string"
+                    example: "12345"
+                  city:
+                    type: "string"
+                    example: "New York"
+                  state:
+                    type: "string"
+                    example: "New York"
+                  country:
+                    type: "string"
+                    example: "United States"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"

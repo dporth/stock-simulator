@@ -3,6 +3,7 @@ from src.dao.state_dao import StateDAO
 from src.dao.city_dao import CityDAO
 from src.dao.country_dao import CountryDAO
 from src.dao.address_dao import AddressDAO
+from datetime import datetime
 
 def get_users():
     """Returns a list of all users from the user table"""
@@ -26,6 +27,7 @@ def get_user_by_id(user_id):
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
 
@@ -55,9 +57,10 @@ def create_user(json):
         state_id = result.state_id
     else:
         # state not found
-        error_response['message'] = "Could not find state provided. Check your request."
+        error_response['message'] = "Could not find state provided. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
     result = country_dao.get_country(country).first()
@@ -65,9 +68,10 @@ def create_user(json):
         country_id = result.country_id
     else:
         # country not found
-        error_response['message'] = "Could not find country provided. Check your request."
+        error_response['message'] = "Could not find country provided. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
     result = city_dao.get_city(city).first()
@@ -75,9 +79,10 @@ def create_user(json):
         city_id = result.city_id
     else:
         # city not found
-        error_response['message'] = "Could not find city provided. Check your request."
+        error_response['message'] = "Could not find city provided. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
    # Get address if it aleady exists
@@ -97,7 +102,7 @@ def create_user(json):
     successful_response['email'] = email
     successful_response['address_id'] = new_address_id
     response['data'] = successful_response
-    
+    response['timestamp'] = datetime.utcnow()
     return response
 
 def process_response(query):
@@ -113,4 +118,5 @@ def process_response(query):
         user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
         users.append(user)
     response['data'] = users
+    response['timestamp'] = datetime.utcnow()
     return response
