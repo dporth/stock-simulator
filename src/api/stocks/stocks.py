@@ -16,7 +16,7 @@ def stocks():
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
-            return jsonify(response), 200
+            return jsonify(response), 200 
 
 @stocks_bp.route('/stocks/<symbol>', methods=['GET'])
 @requires_auth

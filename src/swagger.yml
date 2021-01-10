@@ -1,20 +1,58 @@
 paths:
-  /api/users/{user_id}:
+  /api/stocks:
     get:
-      summary: Returns all users with the specified ID
+      summary: Returns all stocks
+      tags:
+        - Stocks
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Stocks"
+  /api/stocks/{symbol}:
+    get:
+      summary: Returns all stocks with the specified symbol
+      tags:
+        - Stocks
+      parameters:
+      - in: path
+        name: "symbol"
+        description: "A stock symbol"
+        required: true
+        type: string
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Stocks"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
+  /api/users/{id}:
+    get:
+      summary: Returns all users with their address belonging to the specified ID
       tags:
         - Users
       parameters:
       - in: path
-        name: "user_id"
-        description: "The user ID of the users to return"
+        name: "id"
+        description: "A user ID"
         required: true
         type: integer
-        default: "1"
       - in: header
         name: Authorization
         required: true
-        default: "Bearer <token>"
+        description: "Bearer <token>"
       responses:
         200:
           description: "OK"
@@ -23,39 +61,73 @@ paths:
         404:
           description: "Not Found"
           schema:
-            $ref: "#/definitions/Users"
-        400:
-          description: "Invalid request"
-          schema:
-            $ref: "#/definitions/400 Error"
+            $ref: "#/definitions/404 Error"
   /api/users:
     get:
-      summary: Returns all users
+      summary: Returns all users with their address
       tags:
         - Users
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
       responses:
         200:
           description: "OK"
           schema:
             $ref: "#/definitions/Users"
-        400:
-          description: "Invalid request"
-          schema:
-            $ref: "#/definitions/400 Error"
     post:
       summary: Creates a new user
       tags:
         - Users
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      - in: body
+        name: body
+        required: true
+        properties:
+          first_name:
+            type: "string"
+            example: "John"
+          last_name:
+            type: "string"
+            example: "Doe"
+          email:
+            type: "string"
+            example: "JohnDoe@gmail.com"
+          street:
+            type: "string"
+            example: "1 Centre St"
+          postal_code:
+            type: "string"
+            example: "10007"
+          city:
+            type: "string"
+            example: "New York"
+          state:
+            type: "string"
+            example: "New York"
+          country:
+            type: "string"
+            example: "United States"
       responses:
         200:
           description: "OK"
           schema:
-            $ref: "#/definitions/Users"
+            $ref: "#/definitions/Create Users"
+        400:
+          description: "Invalid request"
+          schema:
+            $ref: "#/definitions/400 Error"
 definitions:
   404 Error:
     type: "object"
     properties:
-      Error:
+      error:
           type: "object"
           properties:
             message:
@@ -64,10 +136,13 @@ definitions:
             code:
               type: "string"
               example: "404"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
   400 Error:
     type: "object"
     properties:
-      Error:
+      error:
           type: "object"
           properties:
             message:
@@ -76,6 +151,52 @@ definitions:
             code:
               type: "string"
               example: "400"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Stocks:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            stock_id:
+              type: "int"
+              example: "1"
+            symbol:
+              type: "string"
+              example: "TSLA"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Create Users:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            user_id:
+              type: "int"
+              example: "1"
+            first_name:
+              type: "string"
+              example: "John"
+            last_name:
+              type: "string"
+              example: "Doe"
+            email:
+              type: "string"
+              example: "JohnDoe@gmail.com"
+            address_id:
+              type: "int"
+              example: "1"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
   Users:
     type: "object"
     properties:

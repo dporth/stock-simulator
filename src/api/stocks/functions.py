@@ -1,4 +1,5 @@
 from src.dao.stock_dao import StockDAO
+from datetime import datetime
 
 def get_stocks():
     """Returns a list of all stocks from the stock table"""
@@ -19,6 +20,7 @@ def get_stock_by_symbol(symbol):
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return response
 
 def process_response(query):
@@ -31,4 +33,5 @@ def process_response(query):
         stock['symbol'] = row.symbol
         stocks.append(stock)
     response['data'] = stocks
+    response['timestamp'] = datetime.utcnow()
     return response

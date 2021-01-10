@@ -4,6 +4,7 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from flask import Flask, request, Response, jsonify, abort, Blueprint
+from datetime import datetime
 
 AUTH0_DOMAIN = 'dev-v9e55hvh.us.auth0.com'
 ALGORITHMS = ['RS256']
@@ -19,6 +20,7 @@ def get_token_auth_header():
         error_response['message'] = 'Authorization header is expected. Authorization header missing.'
         error_response['code'] = '401'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return jsonify(response), 401
 
     parts = auth.split()
@@ -27,18 +29,21 @@ def get_token_auth_header():
         error_response['message'] = 'Authorization header must start with "Bearer". Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return jsonify(response), 401
 
     elif len(parts) == 1:
         error_response['message'] = 'Token not found. Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return jsonify(response), 401
 
     elif len(parts) > 2:
         error_response['message'] = 'Authorization header must be bearer token. Invalid request.'
         error_response['code'] = '401'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return jsonify(response), 401
 
     token = parts[1]
@@ -72,6 +77,7 @@ def requires_auth(f):
             error_response['message'] = 'Unable to parse authentication token. Invalid request.'
             error_response['code'] = '400'
             response['error'] = error_response
+            response['timestamp'] = datetime.utcnow()
             return jsonify(response), 400
         if rsa_key:
             try:
@@ -87,16 +93,19 @@ def requires_auth(f):
                 error_response['message'] = 'Token expired.'
                 error_response['code'] = '401'
                 response['error'] = error_response
+                response['timestamp'] = datetime.utcnow()
                 return jsonify(response), 401
             except jwt.JWTClaimsError:
                 error_response['message'] = 'Incorrect claims. Please, check the audience and issuer.'
                 error_response['code'] = '401'
                 response['error'] = error_response
+                response['timestamp'] = datetime.utcnow()
                 return jsonify(response), 401
             except Exception:
                 error_response['message'] = 'Unable to parse authentication token. Invalid request.'
                 error_response['code'] = '400'
                 response['error'] = error_response
+                response['timestamp'] = datetime.utcnow()
                 return jsonify(response), 400
 
             _request_ctx_stack.top.current_user = payload
@@ -105,6 +114,7 @@ def requires_auth(f):
         error_response['message'] = 'Unable to find the appropriate key. Invalid request.'
         error_response['code'] = '400'
         response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
         return jsonify(response), 400
 
     return decorated
