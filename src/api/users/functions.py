@@ -90,18 +90,22 @@ def update_user(user_id, json):
 
         # Update user address attributes if needed
         if address_change:
-            address = process_address(json)
-            if 'error' in address:
-                return address
-            else:
-                successful_response['address_id'] = address['new_address_id']
-                user_dao.update_user(user_id, 'address_id', address['new_address_id'])
+            if not required_keys(json, ['street', 'postal_code', 'city', 'country', 'state']):
+                error_response['message'] = "Request body is missing required key value pairs. Invalid request."
+                error_response['code'] = '400'
+                response['error'] = error_response
+                response['timestamp'] = datetime.utcnow()
+                return response
+            error_present, response = bad_address(json)
+            if error_present:
+                return response
+            new_address_id = process_address(json)
+            user_dao.update_user(user_id, 'address_id', new_address_id)
 
         # Update user attributes
         for each in json.keys():
             if each in user_keys:
                 result = user_dao.update_user(user_id, each, json[each])
-
         return get_user_by_id(user_id) 
     else:
         error_response['message'] = "The requested resource was not found."
@@ -115,6 +119,7 @@ def create_user(json):
     """Creates a new user and returns the user attributes."""
     response = {}
     successful_response = {}
+    error_response = {}
 
     user_dao = UserDAO()
     state_dao = StateDAO()
@@ -122,28 +127,34 @@ def create_user(json):
     country_dao = CountryDAO()
     address_dao = AddressDAO()
 
+    if not required_keys(json, ['first_name', 'last_name', 'email', 'street', 'postal_code', 'city', 'country', 'state']):
+        error_response['message'] = "Request body is missing required key value pairs. Invalid request."
+        error_response['code'] = '400'
+        response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
+        return response
+    error_present, response = bad_address(json)
+    if error_present:
+        return response
+    
+    new_address_id = process_address(json)
     first_name = json['first_name']
     last_name = json['last_name']
     email = json['email']
 
-    address = process_address(json)
-    if 'error' in address:
-        return address
-    else:
-        new_address_id = address['new_address_id']
-        # Create user
-        new_user = user_dao.create_user(first_name, last_name, email, new_address_id)
+    # Create user
+    new_user = user_dao.create_user(first_name, last_name, email, new_address_id)
 
-        successful_response['user_id'] = new_user
-        successful_response['first_name'] = first_name
-        successful_response['last_name'] = last_name
-        successful_response['email'] = email
-        successful_response['address_id'] = new_address_id
-        response['data'] = successful_response
-        response['timestamp'] = datetime.utcnow()
-        return response
+    successful_response['user_id'] = new_user
+    successful_response['first_name'] = first_name
+    successful_response['last_name'] = last_name
+    successful_response['email'] = email
+    successful_response['address_id'] = new_address_id
+    response['data'] = successful_response
+    response['timestamp'] = datetime.utcnow()
+    return response
 
-def requried_keys(json, required):
+def required_keys(json, required):
     """Takes in a list of required keys and checks to see if each key in the json is present in the array of required keys.
     Returns True if all keys required are present otherwise returns False.
     """
@@ -154,23 +165,12 @@ def requried_keys(json, required):
     return keys_found == required
 
 
-def process_address(json):
-    """Takes a json containing address key value pairs and makes an attempt to validate the address. 
-    If an error is found with the address an error response is returned otherwise if no error is found
-    the new address is created and the address id is returned.
+def bad_address(json):
+    """Returns True and the response if an error is present in the address.
     """
     response = {}
     successful_response = {}
-    error_response = {}
-
-    address_keys = ['street', 'postal_code', 'city', 'country', 'state']
-    
-    if not requried_keys(json, address_keys):
-        error_response['message'] = "Request body is missing required key value pairs. Invalid request."
-        error_response['code'] = '400'
-        response['error'] = error_response
-        response['timestamp'] = datetime.utcnow()
-        return response
+    error_response = {}    
 
     state_dao = StateDAO()
     city_dao = CityDAO()
@@ -193,7 +193,7 @@ def process_address(json):
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
-        return response
+        return True, response
 
     result = country_dao.get_country(country).first()
     if result:
@@ -204,7 +204,7 @@ def process_address(json):
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
-        return response
+        return True, response
 
     result = city_dao.get_city(city).first()
     if result:
@@ -215,16 +215,30 @@ def process_address(json):
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
-        return response
-   
+        return True, response
+
+    return False, {}
+
+def process_address(json):
+    """Takes in a json containing address key value pairs and creates the address 
+    or finds the address id if the address already exists.
+    """
+    address_dao = AddressDAO()
+
+    street = json['street']
+    postal_code = json['postal_code']
+    city = json['city']
+    country = json['country']
+    state = json['state']
+
     # Get address if it aleady exists
     result = address_dao.get_address(street, postal_code).first()
     if result:
-        response['new_address_id'] = result.address_id
+        new_address_id = result.address_id
     else:
         # Create address
-        response['new_address_id'] = address_dao.create_address(street, postal_code, country_id, state_id, city_id)
-    return response
+        new_address_id = address_dao.create_address(street, postal_code, country_id, state_id, city_id)
+    return new_address_id
 
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""

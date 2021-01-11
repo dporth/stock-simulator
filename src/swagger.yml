@@ -178,6 +178,29 @@ paths:
           description: "Not Found"
           schema:
             $ref: "#/definitions/404 Error"
+    delete:
+      summary: Deletes the user belonging to the specified id
+      tags:
+        - Users
+      parameters:
+      - in: path
+        name: "id"
+        description: "A user id"
+        required: true
+        type: integer
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Delete Users"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
   /api/users:
     get:
       summary: Returns all users with their address
@@ -302,6 +325,20 @@ definitions:
             share_amount:
               type: "number"
               example: "1.463151"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Delete Users:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            user_id:
+              type: "integer"
+              example: "1"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
