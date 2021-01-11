@@ -29,7 +29,9 @@ def users():
 @requires_auth
 def get_user(id):
     """
-    GET   - returns the users with the user id
+    GET    - returns the users with the user id
+    PUT    - updates the user attributes with the values in the request body
+    DELETE - deletes the user specified by the user id
     """
     if request.method == 'GET':
         response = get_user_by_id(id)
