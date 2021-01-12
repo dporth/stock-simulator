@@ -18,6 +18,11 @@ class CountryDAO():
         with self._db.session_scope() as session:
             return session.query(Country).filter_by(country_name=country_name)
 
+    def get_country_by_id(self, country_id):
+        """Returns all countries that have the state id specified."""
+        with self._db.session_scope() as session:
+            return session.query(Country).filter_by(country_id=country_id)
+
     def delete_country(self, country_name):
         """Deletes all records in the country table that have the country_name specified. Returns the country id of all records deleted."""
         with self._db.session_scope() as session:

@@ -62,4 +62,4 @@ if __name__ == "__main__":
         print(row)
 
     # Delete user funcitonality
-    # print(user.delete_user(id))
+    print(user.delete_user(id))

@@ -28,6 +28,26 @@ def get_account_by_id(account_id):
         response['timestamp'] = datetime.utcnow()
         return response
 
+def delete_account(account_id):
+    """Deletes an account and all account values that belong to the account."""
+    response = {}
+    successful_response = {}
+    error_response = {}
+
+    account_dao = AccountDAO()
+    result = account_dao.get_account_by_id(account_id)
+    if len(result.all()) != 0:
+        deleted_account = account_dao.delete_account(account_id)
+        successful_response['account_id'] = deleted_account
+    else:
+        error_response['message'] = "The requested resource was not found."
+        error_response['code'] = '404'
+        response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
+        return response
+    response['data'] = successful_response
+    response['timestamp'] = datetime.utcnow()
+    return response
 
 def create_account(json):
     response = {}
@@ -37,6 +57,13 @@ def create_account(json):
     account_dao = AccountDAO()
     stock_dao = StockDAO()
     user_dao = UserDAO()
+    
+    if not required_keys(json, ['usd_amount', 'share_amount', 'symbol', 'user_id']):
+        error_response['message'] = "Request body is missing required key value pairs. Invalid request."
+        error_response['code'] = '400'
+        response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
+        return response
 
     usd_amount = json['usd_amount']
     share_amount = json['share_amount']
@@ -88,15 +115,44 @@ def create_account(json):
     response['timestamp'] = datetime.utcnow()
     return response
 
+def required_keys(json, required):
+    """Takes in a list of required keys and checks to see if each key in the json is present in the array of required keys.
+    Returns True if all keys required are present otherwise returns False.
+    """
+    keys_found = []
+    for each in json.keys():
+        if each in required:
+            keys_found.append(each)
+    return set(keys_found) == set(required)
+
+def historical_account_values(account_id):
+    """Returns a json containing the historical account values for the specified account id"""
+    account_dao = AccountDAO()
+    query = account_dao.get_account_values(account_id)
+    history = []
+    for row in query:
+        current_row = {}
+        current_row['valid_from'] = row.AccountValue.valid_from
+        current_row['valid_to'] = row.AccountValue.valid_to
+        current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
+        history.append(current_row)
+    return history
+
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}
-    accounts = []
+    accounts = []   
     for row in query:
         account = {}
         account['account_id'] = row.Account.account_id
+        if row.AccountValue == None:
+            current_usd_account_value = None
+        else:
+            current_usd_account_value = str(row.AccountValue.usd_account_amount)
+        account['current_usd_account_value'] = current_usd_account_value
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
+        account['historical_account_values'] = historical_account_values(row.Account.account_id)
         account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
         accounts.append(account)

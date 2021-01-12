@@ -2,30 +2,30 @@ from flask import Flask, request, Response, jsonify, abort, Blueprint
 from src.api.security import requires_auth, requires_scope
 from .functions import *
 
-stocks_bp = Blueprint('stocks', __name__)
+countries_bp = Blueprint('countries', __name__)
 
-@stocks_bp.route('/stocks', methods=['GET'])
+@countries_bp.route('/countries', methods=['GET'])
 @requires_auth
-def stocks():
+def countries():
     """
-    GET   - returns all stocks
+    GET   - returns all countries
     """
     
     if request.method == 'GET':
-        response = get_stocks()
+        response = get_countries()
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
             return jsonify(response), 200 
 
-@stocks_bp.route('/stocks/<int:id>', methods=['GET'])
+@countries_bp.route('/countries/<int:id>', methods=['GET'])
 @requires_auth
-def get_stock(id):
+def get_country(id):
     """
-    GET   - returns the stocks with the stock id
+    GET   - returns the countries with the country id
     """
     if request.method == 'GET':
-        response = get_stock_by_id(id)
+        response = get_country_by_id(id)
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:

@@ -18,6 +18,11 @@ class CityDAO():
         with self._db.session_scope() as session:
             return session.query(City).filter_by(city_name=city_name)
 
+    def get_city_by_id(self, city_id):
+        """Returns all cities that have the city id specified."""
+        with self._db.session_scope() as session:
+            return session.query(City).filter_by(city_id=city_id)
+
     def delete_city(self, city_name):
         """Deletes all records in the city table that have the city_name specified. Returns the city id of all records deleted."""
         with self._db.session_scope() as session:

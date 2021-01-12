@@ -1,8 +1,7 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
-from src.db.models import Account, User, Stock
-
+from src.db.models import Account, User, Stock, AccountValue
 
 class AccountDAO():
 
@@ -12,7 +11,13 @@ class AccountDAO():
     def get_accounts(self):
         """Returns all accounts with their users and stockss."""
         with self._db.session_scope() as session:
-            return session.query(Account, User, Stock).join(User).join(Stock)
+            return session.query(Account, User, Stock, AccountValue).join(User).join(Stock).join(AccountValue, isouter=True).filter(AccountValue.valid_to == None)
+
+    def get_account_values(self, account_id):
+        """Returns all accounts with their users and stockss."""
+        with self._db.session_scope() as session:
+            return session.query(Account, AccountValue).join(AccountValue).filter(Account.account_id == account_id)
+
 
     def get_account_by_id(self, account_id):
         """Returns all accounts with their address that have the account id provided."""
@@ -20,15 +25,16 @@ class AccountDAO():
             return session.query(Account, User, Stock).filter_by(account_id=account_id).join(User).join(Stock)
     
     def delete_account(self, account_id):
-        """Deletes all records in the account table that have account id specified. Returns the account id of all records deleted."""
+        """Deletes the account record and all account values belonging to the specified account it. 
+        Returns the account id of all records deleted.
+        """
         with self._db.session_scope() as session:
-            marked_to_delete = []
-            results = session.query(Account.account_id).filter_by(account_id=account_id)
-            for row in results:
-                marked_to_delete.append(row[0])
+            accounts = session.query(Account.account_id).filter_by(account_id=account_id)
+            for row in accounts:
+                account_values_del = session.query(AccountValue).filter(AccountValue.account_id==row.account_id).delete()
             account = session.query(Account).filter_by(account_id=account_id).delete()
-            session.flush()
-            return marked_to_delete
+            session.commit()
+            return account_id
 
     def create_account(self, usd_amount, share_amount, stock_id, user_id):
         """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""

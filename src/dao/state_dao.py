@@ -13,10 +13,10 @@ class StateDAO():
         with self._db.session_scope() as session:
             return session.query(State)
 
-    def get_state(self, state_name):
-        """Returns all states that have the state name provided."""
+    def get_state_by_id(self, state_id):
+        """Returns all states that have the state id specified."""
         with self._db.session_scope() as session:
-            return session.query(State).filter_by(state_name=state_name)
+            return session.query(State).filter_by(state_id=state_id)
 
     def delete_state(self, state_name):
         """Deletes all records in the state table that have the state_name specified. Returns the state id of all records deleted."""

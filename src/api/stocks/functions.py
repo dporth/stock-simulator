@@ -23,6 +23,22 @@ def get_stock_by_symbol(symbol):
         response['timestamp'] = datetime.utcnow()
         return response
 
+def get_stock_by_id(id):
+    """Returns all stocks specified by the provided stock id."""
+    response = {}
+    successful_response = {}
+    error_response = {}
+    stock_dao = StockDAO()
+    result = stock_dao.get_stock_by_id(id)
+    if len(result.all()) != 0:
+        return process_response(result)
+    else:
+        error_response['message'] = "The requested resource was not found."
+        error_response['code'] = '404'
+        response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
+        return response
+
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
     response = {}

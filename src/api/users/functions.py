@@ -162,7 +162,7 @@ def required_keys(json, required):
     for each in json.keys():
         if each in required:
             keys_found.append(each)
-    return keys_found == required
+    return set(keys_found) == set(required)
 
 
 def bad_address(json):

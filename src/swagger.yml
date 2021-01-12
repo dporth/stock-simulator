@@ -68,6 +68,146 @@ paths:
             description: "Not Found"
             schema:
               $ref: "#/definitions/404 Error"
+      delete:
+        summary: Deletes the account belonging to the specified id
+        tags:
+          - Accounts
+        parameters:
+        - in: path
+          name: "id"
+          description: "An account id"
+          required: true
+          type: integer
+        - in: header
+          name: Authorization
+          required: true
+          description: "Bearer <token>"
+        responses:
+          200:
+            description: "OK"
+            schema:
+              $ref: "#/definitions/Delete Accounts"
+          404:
+            description: "Not Found"
+            schema:
+              $ref: "#/definitions/404 Error"
+  /api/states:
+    get:
+      summary: Returns all states
+      tags:
+        - States
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/States"
+  /api/states/{id}:
+    get:
+      summary: Returns all states with the specified state id
+      tags:
+        - States
+      parameters:
+      - in: path
+        name: "id"
+        description: "A state id"
+        required: true
+        type: string
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/States"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
+  /api/countries:
+    get:
+      summary: Returns all countries
+      tags:
+        - Countries
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Countries"
+  /api/countries/{id}:
+    get:
+      summary: Returns all countries with the specified country id
+      tags:
+        - Countries
+      parameters:
+      - in: path
+        name: "id"
+        description: "A country id"
+        required: true
+        type: string
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Countries"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
+  /api/cities:
+    get:
+      summary: Returns all cities
+      tags:
+        - Cities
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Cities"
+  /api/cities/{id}:
+    get:
+      summary: Returns all cities with the specified city id
+      tags:
+        - Cities
+      parameters:
+      - in: path
+        name: "id"
+        description: "A city id"
+        required: true
+        type: string
+      - in: header
+        name: Authorization
+        required: true
+        description: "Bearer <token>"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Cities"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/404 Error"
   /api/stocks:
     get:
       summary: Returns all stocks
@@ -83,15 +223,15 @@ paths:
           description: "OK"
           schema:
             $ref: "#/definitions/Stocks"
-  /api/stocks/{symbol}:
+  /api/stocks/{id}:
     get:
-      summary: Returns all stocks with the specified symbol
+      summary: Returns all stocks with the specified stock id
       tags:
         - Stocks
       parameters:
       - in: path
-        name: "symbol"
-        description: "A stock symbol"
+        name: "id"
+        description: "A stock id"
         required: true
         type: string
       - in: header
@@ -285,6 +425,57 @@ definitions:
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  States:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            state_id:
+              type: "integer"
+              example: "1"
+            state_name:
+              type: "string"
+              example: "New York"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Cities:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            city_id:
+              type: "integer"
+              example: "1"
+            city_name:
+              type: "string"
+              example: "New York"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Countries:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            country_id:
+              type: "integer"
+              example: "1"
+            country_name:
+              type: "string"
+              example: "United States"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
   Stocks:
     type: "object"
     properties:
@@ -319,6 +510,23 @@ definitions:
             user_id:
               type: "integer"
               example: "1"
+            historical_account_values:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  usd_account_value:
+                    type: "number"
+                    example: "496.052084"
+                  valid_from:
+                    type: "string"
+                    example: "Tue, 05 Jan 2021 00:50:05 GMT"
+                  valid_to:
+                    type: "string"
+                    example: null
+            current_usd_account_value:
+              type: "integer"
+              example: "512.717373"
             usd_amount:
               type: "number"
               example: "500.000000"
@@ -328,14 +536,24 @@ definitions:
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
+  Delete Accounts:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+            account_id:
+              type: "integer"
+              example: "1"
+      timestamp:
+        type: "string"
+        example: "Sun, 10 Jan 2021 01:01:45 GMT"
   Delete Users:
     type: "object"
     properties:
       data:
-        type: "array"
-        items:
-          type: "object"
-          properties:
+        type: "object"
+        properties:
             user_id:
               type: "integer"
               example: "1"
@@ -382,6 +600,23 @@ definitions:
             share_amount:
               type: "number"
               example: "1.463151"
+            historical_account_values:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  usd_account_value:
+                    type: "number"
+                    example: "496.052084"
+                  valid_from:
+                    type: "string"
+                    example: "Tue, 05 Jan 2021 00:50:05 GMT"
+                  valid_to:
+                    type: "string"
+                    example: null
+            current_usd_account_value:
+              type: "integer"
+              example: "512.717373"
             stock:
               type: "object"
               properties:
