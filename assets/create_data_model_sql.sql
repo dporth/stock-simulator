@@ -1,5 +1,13 @@
 USE [PERSONAL]
 GO
+
+/****** Object:  Schema [stockmarket]    Script Date: 1/16/2021 1:57:19 PM ******/
+CREATE SCHEMA [stockmarket]
+GO
+
+
+
+GO
 /****** Object:  Table [stockmarket].[account]    Script Date: 1/2/2021 10:14:57 AM ******/
 SET ANSI_NULLS ON
 GO
