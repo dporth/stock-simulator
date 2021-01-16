@@ -169,45 +169,6 @@ paths:
           description: "Not Found"
           schema:
             $ref: "#/definitions/404 Error"
-  /api/cities:
-    get:
-      summary: Returns all cities
-      tags:
-        - Cities
-      parameters:
-      - in: header
-        name: Authorization
-        required: true
-        description: "Bearer <token>"
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Cities"
-  /api/cities/{id}:
-    get:
-      summary: Returns all cities with the specified city id
-      tags:
-        - Cities
-      parameters:
-      - in: path
-        name: "id"
-        description: "A city id"
-        required: true
-        type: string
-      - in: header
-        name: Authorization
-        required: true
-        description: "Bearer <token>"
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Cities"
-        404:
-          description: "Not Found"
-          schema:
-            $ref: "#/definitions/404 Error"
   /api/stocks:
     get:
       summary: Returns all stocks
@@ -295,12 +256,6 @@ paths:
             type: "string"
           email:
             type: "string"
-          street:
-            type: "string"
-          postal_code:
-            type: "string"
-          city:
-            type: "string"
           state:
             type: "string"
           country:
@@ -375,12 +330,6 @@ paths:
             type: "string"
           email:
             type: "string"
-          street:
-            type: "string"
-          postal_code:
-            type: "string"
-          city:
-            type: "string"
           state:
             type: "string"
           country:
@@ -437,23 +386,6 @@ definitions:
               type: "integer"
               example: "1"
             state_name:
-              type: "string"
-              example: "New York"
-      timestamp:
-        type: "string"
-        example: "Sun, 10 Jan 2021 01:01:45 GMT"
-  Cities:
-    type: "object"
-    properties:
-      data:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            city_id:
-              type: "integer"
-              example: "1"
-            city_name:
               type: "string"
               example: "New York"
       timestamp:
@@ -580,7 +512,7 @@ definitions:
             email:
               type: "string"
               example: "JohnDoe@gmail.com"
-            address_id:
+            location_id:
               type: "integer"
               example: "1"
       timestamp:
@@ -664,18 +596,9 @@ definitions:
             email:
               type: "string"
               example: "JohnDoe@gmail.com"
-            address:
+            location:
               type: "object"
               properties:
-                  street:
-                    type: "string"
-                    example: "12345 West Ram Way"
-                  postal_code:
-                    type: "string"
-                    example: "12345"
-                  city:
-                    type: "string"
-                    example: "New York"
                   state:
                     type: "string"
                     example: "New York"

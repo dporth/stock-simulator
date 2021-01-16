@@ -26,28 +26,18 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     email = Column(String)
-    address_id = Column(Integer, ForeignKey(f'{_db._schema}.address.address_id'))
+    location_id = Column(Integer, ForeignKey(f'{_db._schema}.location.location_id'))
     children = relationship("Account")
 
     def __repr__(self):
-        return "<User(user_id='%s', first_name='%s', last_name='%s', email='%s', address_id='%s')>" % (self.user_id, self.first_name, self.last_name, self.email, self.address_id)
-
-class City(Base):
-    __tablename__ = 'city'
-    __table_args__ = {'schema' : _db._schema}
-    city_id = Column(Integer, primary_key=True)
-    city_name = Column(String)
-    children = relationship("Address")
-
-    def __repr__(self):
-        return "<City(city_id='%s', city_name='%s')>" % (self.city_id, self.city_name)
+        return "<User(user_id='%s', first_name='%s', last_name='%s', email='%s', location_id='%s')>" % (self.user_id, self.first_name, self.last_name, self.email, self.location_id)
 
 class Country(Base):
     __tablename__ = 'country'
     __table_args__ = {'schema' : _db._schema}
     country_id = Column(Integer, primary_key=True)
     country_name = Column(String)
-    children = relationship("Address")
+    children = relationship("Location")
 
     def __repr__(self):
         return "<Country(country_id='%s', country_name='%s')>" % (self.country_id, self.country_name)
@@ -57,24 +47,21 @@ class State(Base):
     __table_args__ = {'schema' : _db._schema}
     state_id = Column(Integer, primary_key=True)
     state_name = Column(String)
-    children = relationship("Address")
+    children = relationship("Location")
     
     def __repr__(self):
         return "<State(state_id='%s', state_name='%s')>" % (self.state_id, self.state_name)
 
-class Address(Base):
-    __tablename__ = 'address'
+class Location(Base):
+    __tablename__ = 'location'
     __table_args__ = {'schema' : _db._schema}
-    address_id = Column(Integer, primary_key=True)
-    street = Column(String)
-    postal_code = Column(String)
+    location_id = Column(Integer, primary_key=True)
     state_id = Column(Integer, ForeignKey(f'{_db._schema}.state.state_id'))
     country_id = Column(Integer, ForeignKey(f'{_db._schema}.country.country_id'))
-    city_id = Column(Integer, ForeignKey(f'{_db._schema}.city.city_id'))
     children = relationship("User")
 
     def __repr__(self):
-        return "<Address(address_id='%s', street='%s', postal_code='%s', state_id='%s', country_id='%s', city_id='%s')>" % (self.address_id, self.street, self.postal_code, self.state_id, self.country_id, self.city_id)
+        return "<Location(location_id='%s', state_id='%s', country_id='%s')>" % (self.location_id, self.state_id, self.country_id)
 
 class Account(Base):
     __tablename__ = 'account'

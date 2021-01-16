@@ -13,6 +13,11 @@ class StateDAO():
         with self._db.session_scope() as session:
             return session.query(State)
 
+    def get_state(self, state_name):
+        """Returns all states that have the state name provided."""
+        with self._db.session_scope() as session:
+            return session.query(State).filter_by(state_name=state_name)
+
     def get_state_by_id(self, state_id):
         """Returns all states that have the state id specified."""
         with self._db.session_scope() as session:

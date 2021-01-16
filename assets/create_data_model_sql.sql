@@ -39,30 +39,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [stockmarket].[address](
-	[address_id] [int] IDENTITY(1,1) NOT NULL,
-	[street] [nvarchar](1000) NULL,
-	[postal_code] [nvarchar](50) NULL,
-	[city_id] [int] NULL,
+CREATE TABLE [stockmarket].[location](
+	[location_id] [int] IDENTITY(1,1) NOT NULL,
 	[state_id] [int] NULL,
 	[country_id] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[address_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [stockmarket].[city]    Script Date: 1/2/2021 10:14:57 AM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [stockmarket].[city](
-	[city_id] [int] IDENTITY(1,1) NOT NULL,
-	[city_name] [nvarchar](256) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[city_id] ASC
+	[location_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -118,7 +101,7 @@ CREATE TABLE [stockmarket].[user](
 	[first_name] [nvarchar](1000) NULL,
 	[last_name] [nvarchar](50) NULL,
 	email [nvarchar](320) NULL,
-	[address_id] [int] NULL,
+	[location_id] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[user_id] ASC
@@ -136,26 +119,37 @@ GO
 ALTER TABLE [stockmarket].[account]  WITH CHECK ADD FOREIGN KEY([user_id])
 REFERENCES [stockmarket].[user] ([user_id])
 GO
-ALTER TABLE [stockmarket].[address]  WITH CHECK ADD FOREIGN KEY([city_id])
-REFERENCES [stockmarket].[city] ([city_id])
-GO
-ALTER TABLE [stockmarket].[address]  WITH CHECK ADD FOREIGN KEY([country_id])
+ALTER TABLE [stockmarket].[location]  WITH CHECK ADD FOREIGN KEY([country_id])
 REFERENCES [stockmarket].[country] ([country_id])
 GO
-ALTER TABLE [stockmarket].[address]  WITH CHECK ADD FOREIGN KEY([state_id])
+ALTER TABLE [stockmarket].[location]  WITH CHECK ADD FOREIGN KEY([state_id])
 REFERENCES [stockmarket].[state] ([state_id])
 GO
-ALTER TABLE [stockmarket].[user]  WITH CHECK ADD FOREIGN KEY([address_id])
-REFERENCES [stockmarket].[address] ([address_id])
+ALTER TABLE [stockmarket].[user]  WITH CHECK ADD FOREIGN KEY([location_id])
+REFERENCES [stockmarket].[location] ([location_id])
 GO
 
-INSERT INTO stockmarket.city(city_name) values('Boise');
 INSERT INTO stockmarket.country(country_name) values('United States');
 INSERT INTO stockmarket.state(state_name) values('Idaho');
 INSERT INTO stockmarket.stock(symbol) values('VOO');
-INSERT INTO stockmarket.address(street,postal_code, country_id, state_id, city_id) values ('5437 South Begonia Place', '83716', '1', '1', '1')
-INSERT INTO stockmarket.[user](first_name, last_name, email, address_id) values('Darwin', 'Porth', 'dporth@gmail.com','1')
+INSERT INTO stockmarket.location(country_id, state_id) values ('1', '1')
+INSERT INTO stockmarket.[user](first_name, last_name, email, location_id) values('Darwin', 'Porth', 'dporth@gmail.com','1')
 INSERT INTO stockmarket.[account](usd_amount, share_amount, stock_id, user_id) values ('500', '1.463151', '1', '1')
 INSERT INTO stockmarket.state(state_name) values('New York')
-INSERT INTO stockmarket.city(city_name) values('New York')
-INSERT INTO stockmarket.address(street, postal_code, city_id, state_id, country_id) values('1 Centre St, New York', '10007', '2', '2', '1')
+INSERT INTO stockmarket.location(state_id, country_id) values('2', '1')
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-05T00:50:05.873' AS DateTime), CAST(N'2021-01-05T01:44:13.870' AS DateTime), CAST(496.052084 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-05T01:44:13.880' AS DateTime), CAST(N'2021-01-06T01:11:29.437' AS DateTime), CAST(496.052084 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-06T01:11:29.447' AS DateTime), CAST(N'2021-01-07T03:55:38.137' AS DateTime), CAST(499.314910 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-07T03:55:38.147' AS DateTime), CAST(N'2021-01-08T05:15:08.413' AS DateTime), CAST(502.343633 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-08T05:15:08.417' AS DateTime), CAST(N'2021-01-09T04:12:46.910' AS DateTime), CAST(509.849597 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-09T04:12:46.910' AS DateTime), CAST(N'2021-01-12T01:45:11.307' AS DateTime), CAST(512.717373 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-12T01:45:11.310' AS DateTime), CAST(N'2021-01-13T04:19:54.980' AS DateTime), CAST(509.366758 AS Numeric(38, 6)))
+GO
+INSERT [stockmarket].[account_value] ( [account_id], [valid_from], [valid_to], [usd_account_amount]) VALUES (1, CAST(N'2021-01-13T04:19:54.990' AS DateTime), NULL, CAST(509.410652 AS Numeric(38, 6)))
+GO

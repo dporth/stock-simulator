@@ -1,8 +1,7 @@
 from src.dao.user_dao import UserDAO
 from src.dao.state_dao import StateDAO
-from src.dao.city_dao import CityDAO
 from src.dao.country_dao import CountryDAO
-from src.dao.address_dao import AddressDAO
+from src.dao.location_dao import LocationDAO
 from datetime import datetime
 
 def get_users():
@@ -59,17 +58,17 @@ def update_user(user_id, json):
     successful_response = {}
     error_response = {}
 
-    # Later used to determine if a new address needs to be created
-    address_change = False
+    # Later used to determine if a new location needs to be created
+    location_change = False
 
     user_dao = UserDAO()
     result = user_dao.get_user_by_id(user_id)
     if len(result.all()) != 0:
         # Check that only valid keys are passed
         user_keys = ['first_name', 'last_name', 'email']
-        address_keys = ['street', 'postal_code', 'city', 'country', 'state']
+        location_keys = ['country', 'state']
 
-        if len(json.keys()) > len(user_keys) + len(address_keys):
+        if len(json.keys()) > len(user_keys) + len(location_keys):
             error_response['message'] = "Request body includes attributes that can not be updated. Invalid request."
             error_response['code'] = '400'
             response['error'] = error_response
@@ -77,30 +76,30 @@ def update_user(user_id, json):
             return response
 
         for each in json.keys():
-            if each not in user_keys and each not in address_keys:
+            if each not in user_keys and each not in location_keys:
                 error_response['message'] = "Request body includes attributes that can not be updated. Invalid request."
                 error_response['code'] = '400'
                 response['error'] = error_response
                 response['timestamp'] = datetime.utcnow()
                 return response
-            if each in address_keys:
-                address_change = True
+            if each in location_keys:
+                location_change = True
         
         # Validate user attributes
 
-        # Update user address attributes if needed
-        if address_change:
-            if not required_keys(json, ['street', 'postal_code', 'city', 'country', 'state']):
+        # Update user location attributes if needed
+        if location_change:
+            if not required_keys(json, location_keys):
                 error_response['message'] = "Request body is missing required key value pairs. Invalid request."
                 error_response['code'] = '400'
                 response['error'] = error_response
                 response['timestamp'] = datetime.utcnow()
                 return response
-            error_present, response = bad_address(json)
-            if error_present:
-                return response
-            new_address_id = process_address(json)
-            user_dao.update_user(user_id, 'address_id', new_address_id)
+            location_error_present, location_response = bad_location(json)
+            if location_error_present:
+                return location_response
+            new_location_id = process_location(location_response)
+            user_dao.update_user(user_id, 'location_id', new_location_id)
 
         # Update user attributes
         for each in json.keys():
@@ -123,33 +122,33 @@ def create_user(json):
 
     user_dao = UserDAO()
     state_dao = StateDAO()
-    city_dao = CityDAO()
-    country_dao = CountryDAO()
-    address_dao = AddressDAO()
 
-    if not required_keys(json, ['first_name', 'last_name', 'email', 'street', 'postal_code', 'city', 'country', 'state']):
+    country_dao = CountryDAO()
+    location_dao = LocationDAO()
+
+    if not required_keys(json, ['first_name', 'last_name', 'email', 'country', 'state']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
         return response
-    error_present, response = bad_address(json)
-    if error_present:
-        return response
+    location_error_present, location_response = bad_location(json)
+    if location_error_present:
+        return location_response
     
-    new_address_id = process_address(json)
+    new_location_id = process_location(location_response)
     first_name = json['first_name']
     last_name = json['last_name']
     email = json['email']
 
     # Create user
-    new_user = user_dao.create_user(first_name, last_name, email, new_address_id)
+    new_user = user_dao.create_user(first_name, last_name, email, new_location_id)
 
     successful_response['user_id'] = new_user
     successful_response['first_name'] = first_name
     successful_response['last_name'] = last_name
     successful_response['email'] = email
-    successful_response['address_id'] = new_address_id
+    successful_response['location_id'] = new_location_id
     response['data'] = successful_response
     response['timestamp'] = datetime.utcnow()
     return response
@@ -165,25 +164,21 @@ def required_keys(json, required):
     return set(keys_found) == set(required)
 
 
-def bad_address(json):
-    """Returns True and the response if an error is present in the address.
+def bad_location(json):
+    """Returns True and the response if an error is present in the location.
     """
     response = {}
     successful_response = {}
     error_response = {}    
 
     state_dao = StateDAO()
-    city_dao = CityDAO()
     country_dao = CountryDAO()
-    address_dao = AddressDAO()
+    location_dao = LocationDAO()
     
-    street = json['street']
-    postal_code = json['postal_code']
-    city = json['city']
     country = json['country']
     state = json['state']
 
-    # Get state, country, and city id
+    # Get state, country
     result = state_dao.get_state(state).first()
     if result:
         state_id = result.state_id
@@ -206,39 +201,21 @@ def bad_address(json):
         response['timestamp'] = datetime.utcnow()
         return True, response
 
-    result = city_dao.get_city(city).first()
-    if result:
-        city_id = result.city_id
-    else:
-        # city not found
-        error_response['message'] = "Could not find city provided. Invalid request."
-        error_response['code'] = '400'
-        response['error'] = error_response
-        response['timestamp'] = datetime.utcnow()
-        return True, response
+    return False, {'state_id': state_id, 'country_id': country_id}
 
-    return False, {}
-
-def process_address(json):
-    """Takes in a json containing address key value pairs and creates the address 
-    or finds the address id if the address already exists.
+def process_location(ids):
+    """Takes in a json containing location ids. Creates the location or finds the location id if the location already exists.
     """
-    address_dao = AddressDAO()
+    location_dao = LocationDAO()
 
-    street = json['street']
-    postal_code = json['postal_code']
-    city = json['city']
-    country = json['country']
-    state = json['state']
-
-    # Get address if it aleady exists
-    result = address_dao.get_address(street, postal_code).first()
+    # Get location if it aleady exists
+    result = location_dao.get_location(ids['state_id'], ids['country_id']).first()
     if result:
-        new_address_id = result.address_id
+        new_location_id = result.location_id
     else:
-        # Create address
-        new_address_id = address_dao.create_address(street, postal_code, country_id, state_id, city_id)
-    return new_address_id
+        # Create location
+        new_location_id = location_dao.create_location(ids['state_id'], ids['country_id'])
+    return new_location_id
 
 def process_response(query):
     """Takes a query and formats the attributes in the query. Returns the formatted attributes."""
@@ -250,7 +227,7 @@ def process_response(query):
         user['first_name'] = row.User.first_name
         user['last_name'] = row.User.last_name
         user['email'] = row.User.email
-        user['address'] = {'street': row.Address.street, 'postal_code': row.Address.postal_code, 'city': row.City.city_name, 'state': row.State.state_name, 'country': row.Country.country_name}
+        user['location'] = {'state': row.State.state_name, 'country': row.Country.country_name}
         users.append(user)
     response['data'] = users
     response['timestamp'] = datetime.utcnow()
