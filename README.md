@@ -5,9 +5,26 @@ Then users will have access to end of day stock market data which shows the actu
 
 ![](./assets/data_model.png)  
 
+# Getting Started
+## Docker
+This project is containerized using Docker. You can create a Docker image for the application and spin up a container with the web service running inside the container. To do so run the following commands from within /src/:
+1) `docker build -t stock-simulator .` 
+2) `docker run -p 5000:5000 stock-simulator`
+
 ## API
 ### Swagger
-The docs for this API are generated with Swagger. If a local instance of this program is running on your machine, you can visit http://127.0.0.1:5000/apidocs/#/ to see the docs.
+The docs for this API are generated with Swagger. If an instance of this program is running inside a container, you can visit http://localhost:5000/apidocs/#/ to see the docs. This will work as long as you followed the section "Getting Started".
+
+## Deploying to AWS BeanStalk
+### Commands
+1) create .ebextensions/setup.config
+packages:
+  yum:
+    gcc-c++: []
+    unixODBC-devel: []
+2) eb init -p python-3.6 simustock --region us-east-2
+3) eb create simustock
+4) eb open
 
 ## Auth0 Implementation
 ### Facilate storing of user data

@@ -24,4 +24,4 @@ conf_path = os.path.join(conf_path, 'swagger.yml')
 swag = Swagger(app, template_file=conf_path)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
