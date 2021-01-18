@@ -14,15 +14,15 @@ RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 RUN . ~/.bashrc
 RUN apt-get install unixodbc-dev
 
-COPY . /app
-WORKDIR /app
+COPY . /src/
+WORKDIR /src/
 
 RUN pip install -r requirements.txt
 RUN pip install uwsgi
 
 EXPOSE  5000
 
-RUN chmod a+x /app/uid_entrypoint.sh
+RUN chmod a+x /src/uid_entrypoint.sh
 
 # Run
 ENTRYPOINT ["sh", "uid_entrypoint.sh"]
