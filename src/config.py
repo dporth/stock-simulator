@@ -16,7 +16,7 @@ load_dotenv(dotenv_path)
 config = {}
 mssql = {}
 
-mssql['account'] = os.environ.get('DATABASE_ACCOUNT')
+mssql['user'] = os.environ.get('DATABASE_ACCOUNT')
 mssql['server'] = os.environ.get('DATABASE_SERVER')
 mssql['password'] = os.environ.get('DATABASE_PASSWORD')
 mssql['port'] = '1433'
