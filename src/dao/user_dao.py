@@ -38,6 +38,11 @@ class UserDAO():
             session.commit()
             return user_id
 
+    def get_user_by_email(self, email):
+        """Returnes all users with the email specified."""
+        with self._db.session_scope() as session:
+            return session.query(User).filter_by(email=email)
+    
     def create_user(self, first_name, last_name, email, location_id):
         """Creates a record in the user table with the first name, last name, and location id specified. Returns the user id"""
         with self._db.session_scope() as session:

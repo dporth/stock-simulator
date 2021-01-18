@@ -86,6 +86,11 @@ def update_user(user_id, json):
                 location_change = True
         
         # Validate user attributes
+        if 'email' in json.keys():
+            # Validate email
+            email_error_present, email_response = bad_email(json['email'])
+            if email_error_present:
+                return email_response
 
         # Update user location attributes if needed
         if location_change:
@@ -126,6 +131,7 @@ def create_user(json):
     country_dao = CountryDAO()
     location_dao = LocationDAO()
 
+    # Validate location
     if not required_keys(json, ['first_name', 'last_name', 'email', 'country', 'state']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
@@ -136,6 +142,11 @@ def create_user(json):
     if location_error_present:
         return location_response
     
+    # Validate email
+    email_error_present, email_response = bad_email(json['email'])
+    if email_error_present:
+        return email_response
+
     new_location_id = process_location(location_response)
     first_name = json['first_name']
     last_name = json['last_name']
@@ -232,3 +243,22 @@ def process_response(query):
     response['data'] = users
     response['timestamp'] = datetime.utcnow()
     return response
+
+def bad_email(email):
+    """Takes in an email and validates it. This validation includes ensuring no one else has an account with that email.
+    Returns True and a json containing information about the issue if there are issues with the email otherwise returns False.
+    """
+    response = {}
+    error_response = {} 
+
+    user_dao = UserDAO()
+    result = user_dao.get_user_by_email(email).first()
+    if result:
+        # Email found
+        error_response['message'] = "Email already exists. Invalid request."
+        error_response['code'] = '400'
+        response['error'] = error_response
+        response['timestamp'] = datetime.utcnow()
+        return True, response
+    else:
+        return False, {}
