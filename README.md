@@ -6,10 +6,13 @@ Then users will have access to end of day stock market data which shows the actu
 ![](./assets/data_model.png)  
 
 # Getting Started
+## Database
+This program depends on a SQL Server backend. A instance of a SQL Server database must be running. Update DATABASE_SERVER, DATABASE_ACCOUNT, and DATABASE_PASSWORD environment variables on your host machine with the database details.
+
 ## Docker
 This project is containerized using Docker. You can create a Docker image for the application and spin up a container with the web service running inside the container. To do so run the following commands from within /src/:
 1) `docker build -t stock-simulator .` 
-2) `docker run -p 5000:5000 stock-simulator`
+2) `docker run -p 5000:5000 --build-arg database_server=${DATABASE_SERVER} database_account=${DATABASE_ACCOUNT} database_password=${DATABASE_PASSWORD} stock-simulator --`
 
 ## API
 ### Swagger

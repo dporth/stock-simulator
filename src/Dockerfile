@@ -1,5 +1,14 @@
 FROM python:latest
 
+# Environment Variables
+ARG database_account
+ARG database_server
+ARG database_password
+
+ENV DATABASE_ACCOUNT=$database_account
+ENV DATABASE_PASSWORD=$database_password
+ENV DATABASE_SERVER=$database_server
+
 RUN apt-get update
 RUN apt install -y build-essential
 

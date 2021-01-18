@@ -14,6 +14,9 @@ load_dotenv(dotenv_path)
 
 # Database configuration
 config = {}
-
-with open('./config/dbconfig.json') as f:
-    config = json.load(f)
+config['account'] = os.environ.get('DATABASE_ACCOUNT')
+config['server'] = os.environ.get('DATABASE_SERVER')
+config['password'] = os.environ.get('DATABASE_PASSWORD')
+config['port'] = '1433'
+config['database'] = 'SIMS'
+config['schema'] = 'stockmarket'
