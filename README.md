@@ -11,8 +11,8 @@ This program depends on a SQL Server backend. A instance of a SQL Server databas
 
 ## Docker
 This project is containerized using Docker. You can create a Docker image for the application and spin up a container with the web service running inside the container. To do so run the following commands from within /src/:
-1) `docker build --build-arg database_server=${DATABASE_SERVER} database_account=${DATABASE_ACCOUNT} database_password=${DATABASE_PASSWORD} -t stock-simulator .` 
-2) `docker run -p 5000:5000 stock-simulator --`
+1) `docker build --build-arg database_server=${DATABASE_SERVER} --build-arg database_account=${DATABASE_ACCOUNT} --build-arg database_password=${DATABASE_PASSWORD} -t stock-simulator-api .` 
+2) `docker run -p 5000:5000 stock-simulator-api`
 
 ## API
 ### Swagger
