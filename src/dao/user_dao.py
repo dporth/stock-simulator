@@ -43,10 +43,10 @@ class UserDAO():
         with self._db.session_scope() as session:
             return session.query(User).filter_by(email=email)
     
-    def create_user(self, first_name, last_name, email, location_id):
+    def create_user(self, user_id, first_name, last_name, email, location_id):
         """Creates a record in the user table with the first name, last name, and location id specified. Returns the user id"""
         with self._db.session_scope() as session:
-            user = User(first_name=first_name, last_name=last_name, email=email, location_id=location_id)
+            user = User(user_id=user_id, first_name=first_name, last_name=last_name, email=email, location_id=location_id)
             session.add(user)
             session.flush()
             return user.user_id

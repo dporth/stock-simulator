@@ -25,7 +25,7 @@ def users():
         else:
             return jsonify(response), 200
 
-@users_bp.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@users_bp.route('/users/<id>', methods=['GET', 'PUT', 'DELETE'])
 @requires_auth
 def get_user(id):
     """

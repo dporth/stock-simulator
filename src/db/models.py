@@ -22,7 +22,7 @@ class Stock(Base):
 class User(Base):
     __tablename__ = 'user'
     __table_args__ = {'schema' : _db._schema}
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(String, primary_key=True)
     first_name = Column(String)
     last_name = Column(String)
     email = Column(String)
@@ -70,7 +70,7 @@ class Account(Base):
     usd_amount = Column(Integer)
     share_amount = Column(Integer)
     stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
-    user_id = Column(Integer, ForeignKey(f'{_db._schema}.user.user_id'))
+    user_id = Column(String, ForeignKey(f'{_db._schema}.user.user_id'))
     children = relationship("AccountValue")
 
     def __repr__(self):
