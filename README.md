@@ -5,14 +5,18 @@ Then users will have access to end of day stock market data which shows the actu
 
 ![](./assets/data_model.png)  
 
+## ETL
+To obtain the data that allows users to access end of day stock market data which shows the acutal value of their investment based off the real stock market prices, the python script under /src/etl needs to be scheduled to run daily. This script leverages the Market Stack stock market API. You will have to create an account on Market Stack and obtain a personal access token. This token needs to be set in an environment variabled called MARKET_STACK_API_KEY.
+
 # Getting Started
 ## Database
-This program depends on a SQL Server backend. A instance of a SQL Server database must be running. Update DATABASE_SERVER, DATABASE_ACCOUNT, and DATABASE_PASSWORD environment variables on your host machine with the database details.
-
+This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
 ## Docker
 This project is containerized using Docker. You can create a Docker image for the application and spin up a container with the web service running inside the container. To do so run the following commands from within /src/:
 1) `docker build --build-arg database_server=${DATABASE_SERVER} --build-arg database_account=${DATABASE_ACCOUNT} --build-arg database_password=${DATABASE_PASSWORD} -t stock-simulator-api .` 
 2) `docker run -p 5000:5000 stock-simulator-api`
+
+At this point the API is running and available on port 5000.
 
 ## API
 ### Swagger
