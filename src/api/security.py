@@ -6,9 +6,9 @@ from urllib.request import urlopen
 from flask import Flask, request, Response, jsonify, abort, Blueprint
 from datetime import datetime
 
-AUTH0_DOMAIN = 'dev-v9e55hvh.us.auth0.com'
+AUTH0_DOMAIN = 'dev-t96tzodo.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'https://simustock/api'
+API_AUDIENCE = 'https://simustock.app'
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header

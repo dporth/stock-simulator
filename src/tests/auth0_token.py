@@ -12,6 +12,6 @@ payload = json.dumps(payload)
 
 headers = { 'content-type': "application/json" }
 
-response = requests.post("https://dev-v9e55hvh.us.auth0.com/oauth/token", data=payload, headers=headers)
+response = requests.post("https://dev-t96tzodo.us.auth0.com/oauth/token", data=payload, headers=headers)
 
 print(response.text)
