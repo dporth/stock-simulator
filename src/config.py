@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 
 # Stock market API token from system environment variable
 api_token = os.environ.get('MARKET_STACK_API_KEY')
+auth0_domain = os.environ.get('MARKET_STACK_API_KEY')
+api_audience = os.environ.get('MARKET_STACK_API_KEY')
+
 # Stock market end of day api endpoint
 market_stack_eod_endpoint = 'http://api.marketstack.com/v1/eod/latest'
 

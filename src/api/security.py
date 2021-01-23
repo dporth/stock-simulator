@@ -4,11 +4,12 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from flask import Flask, request, Response, jsonify, abort, Blueprint
+from src.config import api_audience, auth0_domain
 from datetime import datetime
 
-AUTH0_DOMAIN = 'dev-t96tzodo.us.auth0.com'
+AUTH0_DOMAIN = auth0_domain
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'https://simustock.app'
+API_AUDIENCE = api_audience
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header

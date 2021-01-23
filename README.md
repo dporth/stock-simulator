@@ -6,9 +6,12 @@ Then users will have access to end of day stock market data which shows the actu
 ![](./assets/data_model.png)  
 
 ## ETL
-To obtain the data that allows users to access end of day stock market data which shows the acutal value of their investment based off the real stock market prices, the python script under /src/etl needs to be scheduled to run daily. This script leverages the Market Stack stock market API. You will have to create an account on Market Stack and obtain a personal access token. This token needs to be set in an environment variabled called MARKET_STACK_API_KEY.
+To obtain the data that allows users to access end of day stock market data which shows the acutal value of their investment based off the real stock market prices, the python script under /src/etl needs to be scheduled to run daily. This script leverages the Market Stack stock market API. So you will have to create an account on Market Stack and obtain a personal access token. This token needs to be set in an environment variable called MARKET_STACK_API_KEY.
 
 # Getting Started
+## Security
+This API is secured using Auth0. You will need to create an account at Auth0 and register an API application. After doing so you will need to obtain the auth0 domain (aka tenant url) and the api audience for the API application. The value of these two fields will need to be set in environment variables called AUTH0_DOMAIN and API_AUDIENCE, respectively.
+
 ## Database
 This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
 ## Docker
