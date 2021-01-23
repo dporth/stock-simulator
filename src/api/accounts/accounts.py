@@ -6,7 +6,7 @@ accounts_bp = Blueprint('accounts', __name__)
 
 @accounts_bp.route('/accounts', methods=['GET', 'POST'])
 #@cross_origin(headers=["Content-Type", "Authorization"])
-@requires_auth
+#@requires_auth
 def accounts():
     """
     GET   - returns all accounts
@@ -27,7 +27,7 @@ def accounts():
             return jsonify(response), 200
 
 @accounts_bp.route('/accounts/<int:id>', methods=['GET', 'DELETE'])
-@requires_auth
+#@requires_auth
 def get_account(id):
     """
     GET    - returns the accounts with the account id

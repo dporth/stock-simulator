@@ -5,7 +5,7 @@ from .functions import *
 countries_bp = Blueprint('countries', __name__)
 
 @countries_bp.route('/countries', methods=['GET'])
-@requires_auth
+#@requires_auth
 def countries():
     """
     GET   - returns all countries
@@ -19,7 +19,7 @@ def countries():
             return jsonify(response), 200 
 
 @countries_bp.route('/countries/<int:id>', methods=['GET'])
-@requires_auth
+#@requires_auth
 def get_country(id):
     """
     GET   - returns the countries with the country id

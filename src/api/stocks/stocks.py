@@ -5,7 +5,7 @@ from .functions import *
 stocks_bp = Blueprint('stocks', __name__)
 
 @stocks_bp.route('/stocks', methods=['GET'])
-@requires_auth
+#@requires_auth
 def stocks():
     """
     GET   - returns all stocks
@@ -19,7 +19,7 @@ def stocks():
             return jsonify(response), 200 
 
 @stocks_bp.route('/stocks/<int:id>', methods=['GET'])
-@requires_auth
+#@requires_auth
 def get_stock(id):
     """
     GET   - returns the stocks with the stock id

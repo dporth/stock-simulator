@@ -5,7 +5,7 @@ from .functions import *
 states_bp = Blueprint('states', __name__)
 
 @states_bp.route('/states', methods=['GET'])
-@requires_auth
+#@requires_auth
 def states():
     """
     GET   - returns all states
@@ -19,7 +19,7 @@ def states():
             return jsonify(response), 200 
 
 @states_bp.route('/states/<int:id>', methods=['GET'])
-@requires_auth
+#@requires_auth
 def get_state(id):
     """
     GET   - returns the states with the state id
