@@ -2,6 +2,7 @@ import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
 from src.db.models import Account, User, Stock, AccountValue
+from sqlalchemy import and_
 
 class AccountDAO():
 
@@ -13,10 +14,11 @@ class AccountDAO():
         with self._db.session_scope() as session:
             return session.query(Account, User, Stock, AccountValue).join(User).join(Stock).join(AccountValue, isouter=True).filter(AccountValue.valid_to == None)
 
-    def get_account_values(self, account_id):
+    def get_account_values(self, account_id, records_since_date):
         """Returns all accounts with their users and stockss."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue).join(AccountValue).filter(Account.account_id == account_id)
+            return session.query(Account, AccountValue).join(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_from >= records_since_date))
+
 
 
     def get_account_by_id(self, account_id):

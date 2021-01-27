@@ -82,8 +82,8 @@ class AccountValue(Base):
     account_value_id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey(f'{_db._schema}.account.account_id'))
     usd_account_amount = Column(Integer)
-    valid_from = Column(DateTime, default=datetime.datetime.utcnow)
-    valid_to = Column(DateTime)
+    valid_from = Column(String, default=datetime.datetime.utcnow)
+    valid_to = Column(String)
 
     def __repr__(self):
         return "<AccountValue(account_value_id='%s', account_id='%s', valid_from='%s', valid_to='%s', usd_account_amount='%s')>" % (self.account_value_id, self.account_id, self.valid_from, self.valid_to, self.usd_account_amount)

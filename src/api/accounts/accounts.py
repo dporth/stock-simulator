@@ -34,7 +34,7 @@ def get_account(id):
     DELETE - deletes the account specified by the account id
     """
     if request.method == 'GET':
-        response = get_account_by_id(id)
+        response = get_account_by_id(id, request.get_json())
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
