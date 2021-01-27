@@ -22,7 +22,7 @@ class AccountDAO():
     def get_account_by_id(self, account_id):
         """Returns all accounts with their address that have the account id provided."""
         with self._db.session_scope() as session:
-            return session.query(Account, User, Stock).filter_by(account_id=account_id).join(User).join(Stock)
+            return session.query(Account, AccountValue, User, Stock).filter_by(account_id=account_id).join(AccountValue).join(User).join(Stock)
     
     def delete_account(self, account_id):
         """Deletes the account record and all account values belonging to the specified account it. 
