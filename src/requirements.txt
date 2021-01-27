@@ -7,4 +7,4 @@ python-jose
 flask-cors
 flasgger
 six
-dateutil
+python-dateutil
