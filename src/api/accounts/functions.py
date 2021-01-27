@@ -52,7 +52,7 @@ def delete_account(account_id):
     error_response = {}
 
     account_dao = AccountDAO()
-    result = account_dao.get_account_by_id(account_id, "")
+    result = account_dao.get_account_by_id(account_id)
     if len(result.all()) != 0:
         deleted_account = account_dao.delete_account(account_id)
         successful_response['account_id'] = deleted_account
@@ -85,7 +85,7 @@ def create_account(json):
     usd_amount = json['usd_amount']
     share_amount = json['share_amount']
     symbol = json['symbol']
-    user_id = json['user_id']
+    user_id = str(json['user_id'])
 
     # Ensure usd and share amount are not strings
     if not isinstance(usd_amount, (int, float)) or not isinstance(share_amount, (int, float)):

@@ -19,7 +19,7 @@ def get_user_by_id(user_id):
     error_response = {}
 
     user_dao = UserDAO()
-    result = user_dao.get_user_by_id(user_id)
+    result = user_dao.get_user_by_id(str(user_id))
     if len(result.all()) != 0:
         return process_response(result)
     else:
@@ -36,9 +36,9 @@ def delete_user(user_id):
     error_response = {}
 
     user_dao = UserDAO()
-    result = user_dao.get_user_by_id(user_id)
+    result = user_dao.get_user_by_id(str(user_id))
     if len(result.all()) != 0:
-        deleted_user = user_dao.delete_user(user_id)
+        deleted_user = user_dao.delete_user(str(user_id))
         successful_response['user_id'] = user_id
     else:
         error_response['message'] = "The requested resource was not found."
@@ -62,7 +62,7 @@ def update_user(user_id, json):
     location_change = False
 
     user_dao = UserDAO()
-    result = user_dao.get_user_by_id(user_id)
+    result = user_dao.get_user_by_id(str(user_id))
     if len(result.all()) != 0:
         # Check that only valid keys are passed
         user_keys = ['first_name', 'last_name', 'email']
@@ -104,13 +104,13 @@ def update_user(user_id, json):
             if location_error_present:
                 return location_response
             new_location_id = process_location(location_response)
-            user_dao.update_user(user_id, 'location_id', new_location_id)
+            user_dao.update_user(str(user_id), 'location_id', new_location_id)
 
         # Update user attributes
         for each in json.keys():
             if each in user_keys:
-                result = user_dao.update_user(user_id, each, json[each])
-        return get_user_by_id(user_id) 
+                result = user_dao.update_user(str(user_id), each, json[each])
+        return get_user_by_id(str(user_id))
     else:
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
@@ -155,7 +155,7 @@ def create_user(json):
     if email_error_present:
         return email_response
 
-    user_id = json['user_id']
+    user_id = str(json['user_id'])
 
     # Validate user id
     result = user_dao.get_user_by_id(user_id)
