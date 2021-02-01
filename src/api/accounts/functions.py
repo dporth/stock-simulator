@@ -174,7 +174,6 @@ def process_response(query, filters):
         account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
         accounts.append(account)
-        break
     response['data'] = accounts
     response['timestamp'] = datetime.utcnow()
     return response
