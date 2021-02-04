@@ -22,7 +22,7 @@ def users(user_id):
         if user_id == "-1":
             response = {}
             error_response = {}
-            error_response['message'] = "Token provided cannot be used for this http request type. Invalid request."
+            error_response['message'] = "Token provided cannot be used for this HTTP request type. Invalid request."
             error_response['code'] = '400'
             response['error'] = error_response
             response['timestamp'] = datetime.utcnow()
