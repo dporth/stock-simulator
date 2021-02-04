@@ -80,6 +80,10 @@ def requires_auth(f):
             response['error'] = error_response
             response['timestamp'] = datetime.utcnow()
             return jsonify(response), 400
+
+
+        user_id = ""
+
         if rsa_key:
             try:
                 payload = jwt.decode(
@@ -89,7 +93,23 @@ def requires_auth(f):
                     audience=API_AUDIENCE,
                     issuer='https://' + AUTH0_DOMAIN + '/'
                 )
+                
+                # If bearer token is client credential set flag to later not allow post, delete, or put functionality
+                if payload['gty'] == 'client-credentials':
+                    user_id = "-1"
+                else:
+                    user_id = payload['sub']
 
+                    # Validate user id
+                    if '|' not in user_id:
+                        error_response['message'] = "User id includes invalid characters. User must be a user registered with Auth0. Invalid request."
+                        error_response['code'] = '400'
+                        response['error'] = error_response
+                        response['timestamp'] = datetime.utcnow()
+                        return jsonify(response), 400
+                    else:
+                        user_id = user_id.split('|')[1]
+                    
             except jwt.ExpiredSignatureError:
                 error_response['message'] = 'Token expired.'
                 error_response['code'] = '401'
@@ -110,7 +130,7 @@ def requires_auth(f):
                 return jsonify(response), 400
 
             _request_ctx_stack.top.current_user = payload
-            return f(*args, **kwargs)
+            return f(user_id, *args, **kwargs)
 
         error_response['message'] = 'Unable to find the appropriate key. Invalid request.'
         error_response['code'] = '400'

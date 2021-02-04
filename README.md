@@ -10,10 +10,10 @@ To obtain the data that allows users to access end of day stock market data whic
 
 # Getting Started
 ## Security
-This API is secured using Auth0. You will need to create an account at Auth0 and register an API application. After doing so you will need to obtain the auth0 domain (aka tenant url) and the api audience for the API application. The value of these two fields will need to be set in environment variables called AUTH0_DOMAIN and API_AUDIENCE, respectively.
+This API is secured using Auth0. You will need to create an account at Auth0 and register an API application. After doing so you will need to obtain the auth0 domain (aka tenant url) and the api audience for the API application. The value of these two fields will need to be set in environment variables called AUTH0_DOMAIN and API_AUTH0_AUDIENCE, respectively.
 
 ## Database
-This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
+This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, DATABASE_NAME, DATABASE_SCHEMA, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
 ## Docker
 This project is containerized using Docker. You can create a Docker image for the application and spin up a container with the web service running inside the container. To do so run the following commands from within /src/:
 1) `docker build --build-arg database_server=${DATABASE_SERVER} --build-arg database_account=${DATABASE_ACCOUNT} --build-arg database_password=${DATABASE_PASSWORD} -t stock-simulator-api .` 

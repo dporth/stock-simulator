@@ -324,8 +324,6 @@ paths:
         name: body
         required: true
         properties:
-          user_id:
-            type: "string"
           first_name:
             type: "string"
           last_name:

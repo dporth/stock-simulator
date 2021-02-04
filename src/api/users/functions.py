@@ -119,7 +119,7 @@ def update_user(user_id, json):
         return response
 
 
-def create_user(json):
+def create_user(json, user_id):
     """Creates a new user and returns the user attributes."""
     response = {}
     successful_response = {}
@@ -132,15 +132,8 @@ def create_user(json):
     location_dao = LocationDAO()
 
     # Validate location
-    if not required_keys(json, ['user_id', 'first_name', 'last_name', 'email', 'country', 'state']):
+    if not required_keys(json, ['first_name', 'last_name', 'email', 'country', 'state']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
-        error_response['code'] = '400'
-        response['error'] = error_response
-        response['timestamp'] = datetime.utcnow()
-        return response
-
-    if '|' in json['user_id']:
-        error_response['message'] = "User id includes invalid characters. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
@@ -154,8 +147,6 @@ def create_user(json):
     email_error_present, email_response = bad_email(json['email'])
     if email_error_present:
         return email_response
-
-    user_id = str(json['user_id'])
 
     # Validate user id
     result = user_dao.get_user_by_id(user_id)

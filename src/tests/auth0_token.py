@@ -1,5 +1,5 @@
 import requests
-from config import auth0_client_id, auth0_client_secret, auth0_audience
+from config import auth0_client_id, auth0_client_secret, auth0_audience, auth0_domain
 import json
 
 payload = {}
@@ -12,6 +12,6 @@ payload = json.dumps(payload)
 
 headers = { 'content-type': "application/json" }
 
-response = requests.post("https://dev-t96tzodo.us.auth0.com/oauth/token", data=payload, headers=headers)
+response = requests.post(f"https://{auth0_domain}/oauth/token", data=payload, headers=headers)
 
 print(response.text)
