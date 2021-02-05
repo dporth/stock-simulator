@@ -4,6 +4,8 @@ FROM python:latest
 ARG database_account
 ARG database_server
 ARG database_password
+ARG api_auth0_audience
+ARG auth0_domain
 
 ENV DATABASE_ACCOUNT=$database_account
 ENV DATABASE_PASSWORD=$database_password
