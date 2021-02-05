@@ -4,7 +4,7 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from flask import Flask, request, Response, jsonify, abort, Blueprint
-from src.config import api_ayth0_audience, auth0_domain
+from src.config import api_auth0_audience, auth0_domain
 from datetime import datetime
 
 AUTH0_DOMAIN = auth0_domain
