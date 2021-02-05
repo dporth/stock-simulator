@@ -8,6 +8,8 @@ ARG database_password
 ENV DATABASE_ACCOUNT=$database_account
 ENV DATABASE_PASSWORD=$database_password
 ENV DATABASE_SERVER=$database_server
+ENV API_AUTH0_AUDIENCE=$api_auth0_audience
+ENV AUTH0_DOMAIN=$auth0_domain
 
 RUN apt-get update
 RUN apt install -y build-essential

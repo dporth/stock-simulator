@@ -4,12 +4,12 @@ from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 from flask import Flask, request, Response, jsonify, abort, Blueprint
-from src.config import api_audience, auth0_domain
+from src.config import api_ayth0_audience, auth0_domain
 from datetime import datetime
 
 AUTH0_DOMAIN = auth0_domain
 ALGORITHMS = ['RS256']
-API_AUDIENCE = api_audience
+API_AUTH0_AUDIENCE = api_auth0_audience
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
@@ -90,7 +90,7 @@ def requires_auth(f):
                     token,
                     rsa_key,
                     algorithms=ALGORITHMS,
-                    audience=API_AUDIENCE,
+                    audience=API_AUTH0_AUDIENCE,
                     issuer='https://' + AUTH0_DOMAIN + '/'
                 )
                 
