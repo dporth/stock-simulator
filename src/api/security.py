@@ -12,7 +12,7 @@ ALGORITHMS = ['RS256']
 API_AUTH0_AUDIENCE = api_auth0_audience
 
 def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
+    """Obtains the Access Token from the Authorization Header.
     """
     auth = request.headers.get('Authorization', None)
     response = {}
@@ -52,7 +52,7 @@ def get_token_auth_header():
 
 
 def requires_auth(f):
-    """Determines if the Access Token is valid. Creates a Python decorator.
+    """Determines if the Access Token is valid. Creates a Python decorator. Returns user id.
     """
 
     @wraps(f)
@@ -94,7 +94,7 @@ def requires_auth(f):
                     issuer='https://' + AUTH0_DOMAIN + '/'
                 )
                 
-                # If bearer token is client credential set flag to later not allow post, delete, or put functionality
+                # If bearer token is client credential set flag 
                 if payload['gty'] == 'client-credentials':
                     user_id = "-1"
                 else:
