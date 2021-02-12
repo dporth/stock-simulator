@@ -159,18 +159,18 @@ def process_response(query, filters):
     """Takes a query and query filters at which point it formats the attributes in the query. Returns the formatted attributes."""
     response = {}
     accounts = []
+    current_usd_account_value = None
     for row in query:
         account = {}
         account['account_id'] = row.Account.account_id
-        if row.AccountValue == None:
-            current_usd_account_value = str(row.AccountValue.usd_account_amount)
-        else:
-            current_usd_account_value = None
-        account['current_usd_account_value'] = current_usd_account_value
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
         for rows in query:
-            account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)
+            if row.AccountValue != None:
+                if rows.AccountValue.valid_to == None:
+                    current_usd_account_value = str(rows.AccountValue.usd_account_amount)
+                account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)
+        account['current_usd_account_value'] = current_usd_account_value
         account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
         accounts.append(account)

@@ -14,7 +14,7 @@ def users(user_id):
     
     if request.method == 'GET':
         # allow all users to be returned if authorization is using client credentials
-        if user_id == "-1"
+        if user_id == "-1":
             response = get_users()
         else: # return only the user attached to bearer token
             response = get_user_by_id(user_id)
