@@ -163,9 +163,9 @@ def process_response(query, filters):
         account = {}
         account['account_id'] = row.Account.account_id
         if row.AccountValue == None:
-            current_usd_account_value = None
-        else:
             current_usd_account_value = str(row.AccountValue.usd_account_amount)
+        else:
+            current_usd_account_value = None
         account['current_usd_account_value'] = current_usd_account_value
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
