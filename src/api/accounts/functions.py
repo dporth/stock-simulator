@@ -14,8 +14,18 @@ def get_accounts():
     result = account_dao.get_accounts()
     return process_response(result, "")
 
+def get_accounts_by_user_id(user_id):
+    """Returns all accounts belonging to the user id."""
+    response = {}
+    successful_response = {}
+    error_response = {}
+    account_dao = AccountDAO()
+
+    result = account_dao.get_accounts_by_user_id(user_id)
+    return process_response(result, "")
+
 def get_account_by_id(account_id, json):
-    """Returns all accounts specified by the provided account id."""
+    """Returns account specified by the provided account id."""
     response = {}
     successful_response = {}
     error_response = {}
@@ -171,7 +181,7 @@ def process_response(query, filters):
                     current_usd_account_value = str(rows.AccountValue.usd_account_amount)
                 account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)
         account['current_usd_account_value'] = current_usd_account_value
-        account['user'] = {'first_name': row.User.first_name, 'last_name': row.User.last_name, 'user_id': row.User.user_id}
+        account['user'] = {'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
         accounts.append(account)
     response['data'] = accounts

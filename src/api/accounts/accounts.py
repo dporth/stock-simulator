@@ -14,7 +14,16 @@ def accounts(user_id):
     """
     
     if request.method == 'GET':
-        response = get_accounts()
+        # allow return of all accounts for all users  if authorization is using client credentials
+        if user_id == "-1":
+            response = get_accounts()
+        else: # return only the accounts attached to bearer token
+            filter_requested = request.args.get('filters')
+            if filter_requested == None:
+                filters = {}
+            else:
+                filters = {"filters": filter_requested}
+            response = get_accounts_by_user_id(str(user_id))
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
