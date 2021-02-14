@@ -180,6 +180,9 @@ def process_response(query, filters):
                 if rows.AccountValue.valid_to == None:
                     current_usd_account_value = str(rows.AccountValue.usd_account_amount)
                 account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)
+            else:
+                current_usd_account_value = str(row.Account.usd_amount)
+                account['historical_account_values'] = []
         account['current_usd_account_value'] = current_usd_account_value
         account['user'] = {'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
