@@ -17,7 +17,7 @@ def users(user_id):
         if user_id == "-1":
             response = get_users()
         else: # return only the user attached to bearer token
-            response = get_user_by_id(user_id)
+            response = get_user_by_id(str(user_id))
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
@@ -32,14 +32,14 @@ def users(user_id):
             response['timestamp'] = datetime.utcnow()
             return jsonify(response), 400
         # Creates a user using user id from Bearer token provided
-        response = create_user(request.get_json(), user_id)
+        response = create_user(request.get_json(), str(user_id))
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:
             return jsonify(response), 200
 
 @users_bp.route('/users/<id>', methods=['GET', 'PUT', 'DELETE'])
-#@requires_auth
+@requires_auth
 def get_user(user_id, id):
     """
     GET    - returns the users with the id
@@ -57,19 +57,19 @@ def get_user(user_id, id):
         return jsonify(response), 401
     else:
         if request.method == 'GET':
-            response = get_user_by_id(user_id)
+            response = get_user_by_id(str(user_id))
             if 'error' in response:
                 return jsonify(response), response['error']['code']
             else:
                 return jsonify(response), 200
         elif request.method == 'PUT':
-            response = update_user(user_id, request.get_json())
+            response = update_user(str(user_id), request.get_json())
             if 'error' in response:
                 return jsonify(response), response['error']['code']
             else:
                 return jsonify(response), 200
         elif request.method == 'DELETE':
-            response = delete_user(user_id)
+            response = delete_user(str(user_id))
             if 'error' in response:
                 return jsonify(response), response['error']['code']
             else:

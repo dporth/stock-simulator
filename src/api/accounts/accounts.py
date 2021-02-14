@@ -6,8 +6,8 @@ accounts_bp = Blueprint('accounts', __name__)
 
 @accounts_bp.route('/accounts', methods=['GET', 'POST'])
 #@cross_origin(headers=["Content-Type", "Authorization"])
-#@requires_auth
-def accounts():
+@requires_auth
+def accounts(user_id):
     """
     GET   - returns all accounts
     POST  - creates a new account with the request body data

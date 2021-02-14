@@ -250,15 +250,7 @@ paths:
         name: body
         required: false
         properties:
-          first_name:
-            type: "string"
-          last_name:
-            type: "string"
           email:
-            type: "string"
-          state:
-            type: "string"
-          country:
             type: "string"
       responses:
         200:
@@ -324,15 +316,7 @@ paths:
         name: body
         required: true
         properties:
-          first_name:
-            type: "string"
-          last_name:
-            type: "string"
           email:
-            type: "string"
-          state:
-            type: "string"
-          country:
             type: "string"
       responses:
         200:
@@ -503,18 +487,9 @@ definitions:
             user_id:
               type: "integer"
               example: "1"
-            first_name:
-              type: "string"
-              example: "John"
-            last_name:
-              type: "string"
-              example: "Doe"
             email:
               type: "string"
               example: "JohnDoe@gmail.com"
-            location_id:
-              type: "integer"
-              example: "1"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
@@ -567,12 +542,6 @@ definitions:
                 user_id:
                   type: "integer"
                   example: "1"
-                first_name:
-                  type: "string"
-                  example: "John"
-                last_name:
-                  type: "string"
-                  example: "Doe"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"
@@ -587,24 +556,9 @@ definitions:
             user_id:
               type: "integer"
               example: "1"
-            first_name:
-              type: "string"
-              example: "John"
-            last_name:
-              type: "string"
-              example: "Doe"
             email:
               type: "string"
               example: "JohnDoe@gmail.com"
-            location:
-              type: "object"
-              properties:
-                  state:
-                    type: "string"
-                    example: "New York"
-                  country:
-                    type: "string"
-                    example: "United States"
       timestamp:
         type: "string"
         example: "Sun, 10 Jan 2021 01:01:45 GMT"

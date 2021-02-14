@@ -166,7 +166,7 @@ def process_response(query, filters):
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
         for rows in query:
-            if row.AccountValue != None:
+            if rows.AccountValue != None:
                 if rows.AccountValue.valid_to == None:
                     current_usd_account_value = str(rows.AccountValue.usd_account_amount)
                 account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)

@@ -74,7 +74,8 @@ def requires_auth(f):
                         'n': key['n'],
                         'e': key['e']
                     }
-        except Exception:
+        except Exception as e:
+            print(e)
             error_response['message'] = 'Unable to parse authentication token. Invalid request.'
             error_response['code'] = '400'
             response['error'] = error_response
@@ -95,13 +96,13 @@ def requires_auth(f):
                 )
                 
                 # If bearer token is client credential set flag 
-                if payload['gty'] == 'client-credentials':
+                if 'gty' in payload and payload['gty'] == 'client-credentials':
                     user_id = "-1"
                 else:
                     user_id = payload['sub']
 
                     # Validate user id
-                    if '|' not in user_id:
+                    if 'auth0|' not in user_id:
                         error_response['message'] = "User id includes invalid characters. User must be a user registered with Auth0. Invalid request."
                         error_response['code'] = '400'
                         response['error'] = error_response
@@ -122,7 +123,8 @@ def requires_auth(f):
                 response['error'] = error_response
                 response['timestamp'] = datetime.utcnow()
                 return jsonify(response), 401
-            except Exception:
+            except Exception as e:
+                print(e)
                 error_response['message'] = 'Unable to parse authentication token. Invalid request.'
                 error_response['code'] = '400'
                 response['error'] = error_response

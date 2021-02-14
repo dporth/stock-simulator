@@ -23,45 +23,11 @@ class User(Base):
     __tablename__ = 'user'
     __table_args__ = {'schema' : _db._schema}
     user_id = Column(String, primary_key=True)
-    first_name = Column(String)
-    last_name = Column(String)
     email = Column(String)
-    location_id = Column(Integer, ForeignKey(f'{_db._schema}.location.location_id'))
     children = relationship("Account")
 
     def __repr__(self):
-        return "<User(user_id='%s', first_name='%s', last_name='%s', email='%s', location_id='%s')>" % (self.user_id, self.first_name, self.last_name, self.email, self.location_id)
-
-class Country(Base):
-    __tablename__ = 'country'
-    __table_args__ = {'schema' : _db._schema}
-    country_id = Column(Integer, primary_key=True)
-    country_name = Column(String)
-    children = relationship("Location")
-
-    def __repr__(self):
-        return "<Country(country_id='%s', country_name='%s')>" % (self.country_id, self.country_name)
-
-class State(Base):
-    __tablename__ = 'state'
-    __table_args__ = {'schema' : _db._schema}
-    state_id = Column(Integer, primary_key=True)
-    state_name = Column(String)
-    children = relationship("Location")
-    
-    def __repr__(self):
-        return "<State(state_id='%s', state_name='%s')>" % (self.state_id, self.state_name)
-
-class Location(Base):
-    __tablename__ = 'location'
-    __table_args__ = {'schema' : _db._schema}
-    location_id = Column(Integer, primary_key=True)
-    state_id = Column(Integer, ForeignKey(f'{_db._schema}.state.state_id'))
-    country_id = Column(Integer, ForeignKey(f'{_db._schema}.country.country_id'))
-    children = relationship("User")
-
-    def __repr__(self):
-        return "<Location(location_id='%s', state_id='%s', country_id='%s')>" % (self.location_id, self.state_id, self.country_id)
+        return "<User(user_id='%s', email='%s')>" % (self.user_id, self.email)
 
 class Account(Base):
     __tablename__ = 'account'
