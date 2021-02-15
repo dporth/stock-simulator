@@ -29,7 +29,7 @@ def accounts(user_id):
         else:
             return jsonify(response), 200
     elif request.method == 'POST':
-        response = create_account(request.get_json())
+        response = create_account(user_id, request.get_json())
         if 'error' in response:
             return jsonify(response), response['error']['code']
         else:

@@ -76,7 +76,7 @@ def delete_account(account_id):
     response['timestamp'] = datetime.utcnow()
     return response
 
-def create_account(json):
+def create_account(user_id, json):
     response = {}
     successful_response = {}
     error_response = {}
@@ -85,7 +85,7 @@ def create_account(json):
     stock_dao = StockDAO()
     user_dao = UserDAO()
     
-    if not required_keys(json, ['usd_amount', 'share_amount', 'symbol', 'user_id']):
+    if not required_keys(json, ['usd_amount', 'share_amount', 'symbol']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
@@ -95,7 +95,6 @@ def create_account(json):
     usd_amount = json['usd_amount']
     share_amount = json['share_amount']
     symbol = json['symbol']
-    user_id = str(json['user_id'])
 
     # Ensure usd and share amount are not strings
     if not isinstance(usd_amount, (int, float)) or not isinstance(share_amount, (int, float)):
