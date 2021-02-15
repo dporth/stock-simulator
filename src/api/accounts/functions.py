@@ -120,7 +120,7 @@ def create_account(user_id, json):
     # Check to see if user exists
     result = user_dao.get_user_by_id(user_id).first()
     if result:
-        user_id = result.User.user_id
+        user_id = result.user_id
     else:
         # user not found
         error_response['message'] = "Could not find user provided. Invalid request."
