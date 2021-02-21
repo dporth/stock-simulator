@@ -1,5 +1,6 @@
 from src.dao.user_dao import UserDAO
 from datetime import datetime
+from .resources.auth0_management import Auth0Management
 
 def get_users():
     """Returns a list of all users from the user table"""
@@ -27,28 +28,46 @@ def get_user_by_id(user_id):
         return response
 
 def delete_user(user_id):
-    """Deletes a user and all accounts and account values that belong to the user"""
+    """
+    Deletes a user and all accounts and account values that belong to the user. Also deletes the user
+    in the third party password manager.
+    """
     response = {}
     successful_response = {}
     error_response = {}
 
+    auth0_management = Auth0Management()
+
     user_dao = UserDAO()
     result = user_dao.get_user_by_id(user_id)
+
     if len(result.all()) != 0:
-        deleted_user = user_dao.delete_user(user_id)
-        successful_response['user_id'] = user_id
+        auth0_response_code = auth0_management.delete_user(user_id) 
+        if str(auth0_response_code) != "204":
+            error_response['message'] = f"Failed to delete user in third party authentication service."
+            error_response['code'] = auth0_response_code
+            response['error'] = error_response
+            response['timestamp'] = datetime.utcnow()
+            return response
+        else:
+            # implement rollback transaction switch auth0 deletion and database deletiong
+            deleted_user = user_dao.delete_user(user_id)
+            successful_response['user_id'] = user_id
     else:
         error_response['message'] = "The requested resource was not found."
         error_response['code'] = '404'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
         return response
+
     response['data'] = successful_response
     response['timestamp'] = datetime.utcnow()
+
     return response
 
 def update_user(user_id, json):
-    """Updates the user that belongs to the specified user id. Only keys present in the json will bw updated in database.
+    """
+    Updates the user that belongs to the specified user id. Only keys present in the json will bw updated in database.
     Returns the user's updated data.
     """
     response = {}

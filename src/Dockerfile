@@ -16,6 +16,9 @@ ENV API_AUTH0_AUDIENCE=$api_auth0_audience
 ENV AUTH0_DOMAIN=$auth0_domain
 ENV DATABASE_NAME=$database_name
 ENV DATABASE_SCHEMA=$database_schema
+ENV AUTH0_MGT_API_AUDIENCE=$auth0_mgt_api_audience
+ENV AUTH0_MGT_CLIENT_ID=$auth0_mgt_client_id
+ENV AUTH0_MGT_CLIENT_SECRET=$auth0_mgt_client_secret
 
 RUN apt-get update
 RUN apt install -y build-essential
