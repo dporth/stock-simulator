@@ -8,6 +8,9 @@ ARG api_auth0_audience
 ARG auth0_domain
 ARG database_name
 ARG database_schema
+ARG auth0_mgt_api_audience
+ARG auth0_mgt_client_id
+ARG auth0_mgt_client_secret
 
 ENV DATABASE_ACCOUNT=$database_account
 ENV DATABASE_PASSWORD=$database_password
