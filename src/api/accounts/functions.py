@@ -156,13 +156,17 @@ def historical_account_values(account_id, filters):
     account_dao = AccountDAO()
     query = account_dao.get_account_values(account_id, filters)
     history = []
+    current_usd_amount = None
     for row in query:
         current_row = {}
         current_row['valid_from'] = str(row.AccountValue.valid_from)
         current_row['valid_to'] = str(row.AccountValue.valid_to)
         current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
         history.append(current_row)
-    return history
+
+        if str(row.AccountValue.valid_to) == None:
+            current_usd_amount = str(row.AccountValue.valid_to)
+    return history, current_usd_amount
 
 def process_response(query, filters):
     """Takes a query and query filters at which point it formats the attributes in the query. Returns the formatted attributes."""
@@ -175,12 +179,11 @@ def process_response(query, filters):
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
         for rows in query:
-            if rows.AccountValue != None:
-                if rows.AccountValue.valid_to == None:
-                    current_usd_account_value = str(rows.AccountValue.usd_account_amount)
-                account['historical_account_values'] = historical_account_values(row.Account.account_id, filters)
-            else:
+            account['historical_account_values'], current_usd_amount = historical_account_values(row.Account.account_id, filters)
+            if current_usd_amount == None:
                 current_usd_account_value = str(row.Account.usd_amount)
+            else:
+                current_usd_account_value = current_usd_amount
                 account['historical_account_values'] = []
         account['current_usd_account_value'] = current_usd_account_value
         account['user'] = {'user_id': row.User.user_id}
