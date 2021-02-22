@@ -163,9 +163,8 @@ def historical_account_values(account_id, filters):
         current_row['valid_to'] = str(row.AccountValue.valid_to)
         current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
         history.append(current_row)
-
-        if str(row.AccountValue.valid_to) == None:
-            current_usd_amount = str(row.AccountValue.valid_to)
+        if row.AccountValue.valid_to == None:
+            current_usd_amount = str(row.AccountValue.usd_account_amount)
     return history, current_usd_amount
 
 def process_response(query, filters):
@@ -182,9 +181,9 @@ def process_response(query, filters):
             account['historical_account_values'], current_usd_amount = historical_account_values(row.Account.account_id, filters)
             if current_usd_amount == None:
                 current_usd_account_value = str(row.Account.usd_amount)
+                account['historical_account_values'] = []
             else:
                 current_usd_account_value = current_usd_amount
-                account['historical_account_values'] = []
         account['current_usd_account_value'] = current_usd_account_value
         account['user'] = {'user_id': row.User.user_id}
         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
