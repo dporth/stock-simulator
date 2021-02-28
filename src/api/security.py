@@ -102,14 +102,14 @@ def requires_auth(f):
                     user_id = payload['sub']
 
                     # Validate user id
-                    if 'auth0|' not in user_id:
+                    if 'auth0|' or 'apple|' in user_id:
+                        user_id = user_id.split('|')[1]
+                    else:
                         error_response['message'] = "User id includes invalid characters. User must be a user registered with Auth0. Invalid request."
                         error_response['code'] = '400'
                         response['error'] = error_response
                         response['timestamp'] = datetime.utcnow()
                         return jsonify(response), 400
-                    else:
-                        user_id = user_id.split('|')[1]
                     
             except jwt.ExpiredSignatureError:
                 error_response['message'] = 'Token expired.'
