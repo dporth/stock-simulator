@@ -39,4 +39,4 @@ packages:
 ## Auth0 Native App Implementation 
 ### OAuth2 Authorization Flow
 1) Omitt client secret from native app
-2) authorization requests made from native app are only made through external user-agents (user's browser)
+2) Authorization requests made from native app are only made through external user-agents (user's browser)

@@ -23,8 +23,10 @@ class Auth0Management():
         return text['access_token']
 
     def delete_user(self, user_id):
-
-        url = f"https://{auth0_domain}/api/v2/users/auth0|{user_id}"
+        auth_type = "auth0"
+        if '.' in user_id:
+            auth_type = "apple"
+        url = f"https://{auth0_domain}/api/v2/users/{auth_type}|{user_id}"
 
         payload={}
         headers = {
