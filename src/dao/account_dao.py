@@ -3,6 +3,7 @@ import sys
 from src.db.db_helper import DBHelper
 from src.db.models import Account, User, Stock, AccountValue
 from sqlalchemy import and_
+from datetime import datetime, date, time, timedelta
 
 class AccountDAO():
 
@@ -17,7 +18,7 @@ class AccountDAO():
     def get_account_values(self, account_id, records_since_date):
         """Returns all accounts with their users and stockss."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue).join(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_from >= records_since_date))
+            return session.query(Account, AccountValue).join(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_from >= records_since_date, AccountValue.valid_from <= datetime.now()))
 
     def get_accounts_by_user_id(self, user_id):
         """Returns all accounts belonging to the user id specified."""
