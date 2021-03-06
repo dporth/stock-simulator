@@ -42,7 +42,7 @@ class AccountDAO():
             return account_id
 
     def create_account(self, usd_amount, share_amount, stock_id, user_id):
-        """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""
+        """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""        
         with self._db.session_scope() as session:
             account = Account(usd_amount=usd_amount, share_amount=share_amount, stock_id=stock_id, user_id=user_id)
             session.add(account)

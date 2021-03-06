@@ -15,19 +15,42 @@ class Stock(Base):
     stock_id = Column(Integer, primary_key=True)
     symbol = Column(String)
     children = relationship("Account")
-
+    children = relationship("StockPriceQueue")
+    children = relationship("StockPriceHistory") 
     def __repr__(self):
         return "<Stock(stock_id='%s', symbol='%s')>" % (self.stock_id, self.symbol)
+
+class StockPriceQueue(Base):
+    __tablename__ = 'stock_price_queue'
+    __table_args__ = {'schema' : _db._schema}
+    queue_id = Column(Integer, primary_key=True)
+    stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
+    etl_date = Column(String, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return "<StockPriceQueue(queue_id = '%s', stock_id='%s', etl_date='%s')>" % (self.queue_id, self.stock_id, self.etl_date)
+
+class StockPriceHistory(Base):
+    __tablename__ = 'stock_price_history'
+    __table_args__ = {'schema' : _db._schema}
+    stock_price_history_id = Column(Integer, primary_key=True)
+    stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
+    historical_usd_price = Column(Integer)
+    valid_from = Column(String, default=datetime.datetime.utcnow)
+    valid_to = valid_to = Column(String)
+
+    def __repr__(self):
+        return "<StockPriceHistory(stock_price_history_id='%s', stock_id='%s', historical_used_price='%s', valid_from='%s', valid_to='%s')>" % (self.stock_price_history_id, self.stock_id, self.historical_usd_price, self.valid_from, self.valid_to)
 
 class User(Base):
     __tablename__ = 'user'
     __table_args__ = {'schema' : _db._schema}
     user_id = Column(String, primary_key=True)
-    email = Column(String)
+    identifier = Column(String)
     children = relationship("Account")
 
     def __repr__(self):
-        return "<User(user_id='%s', email='%s')>" % (self.user_id, self.email)
+        return "<User(user_id='%s', identifier='%s')>" % (self.user_id, self.identifier)
 
 class Account(Base):
     __tablename__ = 'account'

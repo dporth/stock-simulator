@@ -1,6 +1,9 @@
 from src.dao.user_dao import UserDAO
 from src.dao.account_dao import AccountDAO
+from src.dao.account_value_dao import AccountValueDAO
 from src.dao.stock_dao import StockDAO
+from src.dao.stock_price_history_dao import StockPriceHistoryDAO
+from src.dao.stock_price_queue_dao import StockPriceQueueDAO
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -84,7 +87,10 @@ def create_account(user_id, json):
     account_dao = AccountDAO()
     stock_dao = StockDAO()
     user_dao = UserDAO()
-    
+    account_value_dao = AccountValueDAO()
+    stock_price_history_dao = StockPriceHistoryDAO()
+    stock_price_queue_dao = StockPriceQueueDAO()
+
     if not required_keys(json, ['usd_amount', 'share_amount', 'symbol']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
@@ -129,9 +135,23 @@ def create_account(user_id, json):
         response['timestamp'] = datetime.utcnow()
         return response
 
+
+
     # Create account
     new_account = account_dao.create_account(usd_amount, share_amount, stock_id, user_id)
 
+    # Check if most up to date stock price is present
+    result = stock_price_history_dao.get_stock_value(stock_id).first()
+    if result:
+        current_usd_account_value = result.historical_usd_price
+        # add account value
+        account_value_dao.create_account_value(new_account, current_usd_account_value)
+    else:
+        # check if stock already in queue
+        queue_id = stock_price_queue_dao.get_stock_from_queue(stock_id).first()
+        if not queue_id:
+            queue_id = stock_price_queue_dao.add_stock_to_queue(stock_id)
+        
     successful_response['account_id'] = new_account
     successful_response['stock_id'] = stock_id
     successful_response['user_id'] = user_id

@@ -78,7 +78,7 @@ def update_user(user_id, json):
     result = user_dao.get_user_by_id(user_id)
     if len(result.all()) != 0:
         # Check that only valid keys are passed
-        user_keys = ['email']
+        user_keys = ['identifier']
 
         if len(json.keys()) > len(user_keys):
             error_response['message'] = "Request body includes attributes that can not be updated. Invalid request."
@@ -95,13 +95,6 @@ def update_user(user_id, json):
                 response['timestamp'] = datetime.utcnow()
                 return response
         
-        # Validate user attributes
-        if 'email' in json.keys():
-            # Validate email
-            email_error_present, email_response = bad_email(json['email'])
-            if email_error_present:
-                return email_response
-
         # Update user attributes
         for each in json.keys():
             if each in user_keys:
@@ -123,17 +116,13 @@ def create_user(json, user_id):
 
     user_dao = UserDAO()
 
-    if not required_keys(json, ['email']):
+    if not required_keys(json, ['identifier']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
         return response
 
-    # Validate email
-    email_error_present, email_response = bad_email(json['email'])
-    if email_error_present:
-        return email_response
 
     # Validate user id
     result = user_dao.get_user_by_id(user_id)
@@ -144,13 +133,13 @@ def create_user(json, user_id):
         response['timestamp'] = datetime.utcnow()
         return response
 
-    email = json['email']
+    identifier = json['identifier']
 
     # Create user
-    new_user = user_dao.create_user(user_id, email)
+    new_user = user_dao.create_user(user_id, identifier)
 
     successful_response['user_id'] = new_user
-    successful_response['email'] = email
+    successful_response['identifier'] = identifier
     response['data'] = successful_response
     response['timestamp'] = datetime.utcnow()
     return response
@@ -165,18 +154,18 @@ def required_keys(json, required):
             keys_found.append(each)
     return set(keys_found) == set(required)
 
-def bad_email(email):
-    """Takes in an email and validates it. This validation includes ensuring no one else has an account with that email.
-    Returns True and a json containing information about the issue if there are issues with the email otherwise returns False.
+def bad_identifier(identifier):
+    """Takes in an identifier and validates it. This validation includes ensuring no one else has an account with that identifier.
+    Returns True and a json containing information about the issue if there are issues with the identifier otherwise returns False.
     """
     response = {}
     error_response = {} 
 
     user_dao = UserDAO()
-    result = user_dao.get_user_by_email(email).first()
+    result = user_dao.get_user_by_identifier(identifier).first()
     if result:
-        # Email found
-        error_response['message'] = "Email already exists. Invalid request."
+        # identifier found
+        error_response['message'] = "identifier already exists. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
@@ -191,7 +180,7 @@ def process_response(query):
     for row in query:
         user = {}
         user['user_id'] = row.user_id
-        user['email'] = row.email
+        user['identifier'] = row.identifier
         users.append(user)
     response['data'] = users
     response['timestamp'] = datetime.utcnow()

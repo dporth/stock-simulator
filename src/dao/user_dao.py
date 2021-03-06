@@ -38,15 +38,15 @@ class UserDAO():
             session.commit()
             return user_id
 
-    def get_user_by_email(self, email):
-        """Returnes all users with the email specified."""
+    def get_user_by_identifier(self, identifier):
+        """Returnes all users with the identifier specified."""
         with self._db.session_scope() as session:
-            return session.query(User).filter_by(email=email)
+            return session.query(User).filter_by(identifier=identifier)
     
-    def create_user(self, user_id, email):
+    def create_user(self, user_id, identifier):
         """Creates a record in the user table. Returns the user id"""
         with self._db.session_scope() as session:
-            user = User(user_id=user_id, email=email)
+            user = User(user_id=user_id, identifier=identifier)
             session.add(user)
             session.flush()
             return user.user_id
