@@ -6,6 +6,7 @@ from src.dao.stock_price_history_dao import StockPriceHistoryDAO
 from src.dao.stock_price_queue_dao import StockPriceQueueDAO
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
+from decimal import Decimal
 
 from sqlalchemy.sql import func
 
@@ -143,7 +144,7 @@ def create_account(user_id, json):
     # Check if most up to date stock price is present
     result = stock_price_history_dao.get_stock_value(stock_id).first()
     if result:
-        current_usd_account_value = result.historical_usd_price * decimal.Decimal(share_amount)
+        current_usd_account_value = result.historical_usd_price * Decimal(share_amount)
         # add account value
         account_value_dao.create_account_value(new_account, current_usd_account_value)
     else:
