@@ -5,52 +5,47 @@ from time import strftime
 import json
 import pandas as pd
 from decimal import Decimal
-from src.db.db_helper import DBHelper
-from src.db.models import Stock, Account
-from src.config import api_token, market_stack_eod_endpoint
+from src.config import polygon_queue_api_key, polygon_stock_eod_endpoint
+from src.dao.stock_price_queue_dao import StockPriceQueueDAO
+from src.dao.stock_price_history_dao import StockPriceHistoryDAO
 from src.dao.stock_dao import StockDAO
-from src.dao.account_value_dao import AccountValueDAO
 
-class LoadAccountValues():
+class LoadQueueStockPrices():
     def __init__(self):
-        self._stock_dao = StockDAO()
-        self._account_value_dao = AccountValueDAO()
-        self._db = DBHelper()
+        self._queue = StockPriceQueueDAO()
+        self._stock = StockDAO()
+        self._stock_history = StockPriceHistoryDAO()
 
-    def get_account_stocks(self):
-        """Returns all account and stock records where the account has a match to a stock id in the stock table."""
-        with self._db.session_scope() as session:
-            return session.query(Account, Stock).join(Stock)
+    def pop_stock_queue(self):
+        """Pops the next item in the queue and returns its id."""
+        stock_id = self._queue.pop_stock_queue()
+        return stock_id
 
-    def get_stocks(self):
-        return self._stock_dao.get_stocks()
+    def get_stock_symbol(self, stock_id):
+        """Gets symbol from stock id."""
+        result = self._stock.get_stock_by_id(stock_id).first()
+        if result:
+            symbol = result.symbol
+        return symbol
 
-    def request_eod_stock_values(self, stocks):
-        parameters = {'access_key': api_token, 'symbols': ','.join(stocks)}
-        return requests.get(market_stack_eod_endpoint, params=parameters)
+    def update_stock_price_history(self, symbol, value):
+        """Takes in a symbol and value and updates the historical usd account value in stock price history table."""
+        return self._stock_history.create_stock_value(stock_id, value)
+
+    def request_eod_stock_values(self, symbol):
+        return requests.get(polygon_stock_eod_endpoint.format(ticker=symbol, key=polygon_queue_api_key))
 
 if __name__ == '__main__':
-    etl = LoadAccountValues()
+    etl = LoadQueueStockPrices()
+    for i in range(1,6):
+        stock_id = etl.pop_stock_queue()
+        if stock_id:
+            symbol = etl.get_stock_symbol(stock_id)
+            response = etl.request_eod_stock_values(symbol)
+            eod_value = json.loads(response.text)['results'][0]['c']
+            etl.update_stock_price_history(symbol, eod_value)
 
-    # Get stock symbols
-    stocks = []
-    result = etl.get_stocks()
-    for row in result:
-        stocks.append(row.symbol)
 
-    # Get end of day closing stock values
-    result = etl.request_eod_stock_values(stocks)
-    eod_close_data = {}
-    for each in result.json()['data']:
-        eod_close_data[each['symbol']] = each['close']
-    eod_close_json = json.dumps(eod_close_data)
 
-    # Calculate new stock value based off share and closing value
-    # Then update marek value table
-    results = etl.get_account_stocks()
-    for row in results:
-        account_id = row.Account.account_id
-        share_amount = row.Account.share_amount
-        stock_symbol = row.Stock.symbol
-        usd_account_amount = share_amount * Decimal(json.loads(eod_close_json)[stock_symbol])
-        etl._account_value_dao.expire_account_value(account_id, usd_account_amount)
+
+

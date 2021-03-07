@@ -11,6 +11,7 @@ ARG database_schema
 ARG auth0_mgt_api_audience
 ARG auth0_mgt_client_id
 ARG auth0_mgt_client_secret
+ARG polygon_queue_api_key
 
 ENV DATABASE_ACCOUNT=$database_account
 ENV DATABASE_PASSWORD=$database_password
@@ -22,6 +23,7 @@ ENV DATABASE_SCHEMA=$database_schema
 ENV AUTH0_MGT_API_AUDIENCE=$auth0_mgt_api_audience
 ENV AUTH0_MGT_CLIENT_ID=$auth0_mgt_client_id
 ENV AUTH0_MGT_CLIENT_SECRET=$auth0_mgt_client_secret
+ENV POLYGON_QUEUE_API_KEY=$polygon_queue_api_key
 
 RUN apt-get update
 RUN apt install -y build-essential

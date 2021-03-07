@@ -19,9 +19,17 @@ class StockPriceQueueDAO():
             return stock_price_queue.queue_id
 
     def get_stock_from_queue(self, stock_id):
-        """Returns the queue result if the stock is in the queue."""
+        """Returns query to get stock from queue with the given id."""
         with self._db.session_scope() as session:
             return session.query(StockPriceQueue).filter_by(stock_id=stock_id)
     
 
-            
+    def pop_stock_queue(self):
+        """Returns stock id and removes it from queue table."""
+        with self._db.session_scope() as session:
+            result = session.query(StockPriceQueue).order_by(StockPriceQueue.etl_date.desc()).first()
+            if result:
+                stock_id = result.stock_id
+                session.query(StockPriceQueue).filter_by(stock_id=stock_id).delete()
+                return stock_id
+        return None

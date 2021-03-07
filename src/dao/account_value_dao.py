@@ -42,7 +42,7 @@ class AccountValueDAO():
         with self._db.session_scope() as session:
             # Expire old record
             account_value = session.query(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_to==None)).first()
-            if(account_value):
+            if account_value:
                 account_value.valid_to = datetime.datetime.utcnow()
                 session.commit()
         
