@@ -46,7 +46,7 @@ class LoadQueueStockPrices():
         account_ids = []
         result = self._account.get_accounts_by_stock(stock_id)
         for row in result:
-            account = {"account_id": row.account_id, "usd_account_amount":row.share_amount*eod_value}
+            account = {"account_id": row.account_id, "usd_account_amount":row.share_amount* Decimal(eod_value)}
             account_ids.append(account)
         for each in account_ids:
             self._account_value.expire_account_value(each["account_id"], each["usd_account_amount"])
