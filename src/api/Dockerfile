@@ -47,7 +47,7 @@ RUN pip install uwsgi
 
 EXPOSE  5000
 
-RUN chmod a+x /src/uid_entrypoint.sh
+RUN chmod a+x ./api/uid_entrypoint.sh
 
 # Run
-ENTRYPOINT ["sh", "uid_entrypoint.sh"]
+ENTRYPOINT ["sh", "./api/uid_entrypoint.sh"]

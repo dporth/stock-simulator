@@ -36,8 +36,11 @@ class AccountValueDAO():
             session.flush()
             return account_value.account_value_id
 
-    def expire_account_value(self,account_id, usd_account_amount):
-        """Expires the old account value specified by account id and creates a new record in the account value table with the other parameter specified. Returns the account value id of the record created."""
+    def expire_account_value(self, account_id, usd_account_amount):
+        """
+            Expires the old account value specified by account id and creates a new record in the account value table with the other parameter specified. 
+            Returns the account value id of the record created.
+        """
 
         with self._db.session_scope() as session:
             # Expire old record

@@ -1,0 +1,1 @@
+docker run --rm stock-simulator-queue-etl

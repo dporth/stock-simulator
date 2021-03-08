@@ -15,7 +15,7 @@ class AccountDAO():
             return session.query(Account, User, Stock, AccountValue).join(User).join(Stock).join(AccountValue, isouter=True).filter(AccountValue.valid_to == None)
 
     def get_account_values(self, account_id, records_since_date):
-        """Returns all accounts with their users and stockss."""
+        """Returns all accounts with their users and stocks."""
         with self._db.session_scope() as session:
             return session.query(Account, AccountValue).join(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_from >= records_since_date))
 
@@ -23,6 +23,11 @@ class AccountDAO():
         """Returns all accounts belonging to the user id specified."""
         with self._db.session_scope() as session:
             return session.query(Account, User, Stock).join(Stock).join(User).filter(User.user_id==user_id)
+
+    def get_accounts_by_stock(self, stock_id):
+        """Returns all accounts that are for a specific stock id."""
+        with self._db.session_scope() as session:
+            return session.query(Account).filter_by(stock_id=stock_id)       
 
     def get_account_by_id(self, account_id):
         """Returns all accounts with their address that have the account id provided."""

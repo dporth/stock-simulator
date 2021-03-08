@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    api:
+        build:
+            context: .
+            dockerfile: ./api/Dockerfile
+        container_name: stock-simulator-api
+        image: stock-simulator-api
+    queue_etl:
+        build:
+            context: .
+            dockerfile: ./etl/Dockerfile
+        container_name: stock-simulator-queue-etl
+        image: stock-simulator-queue-etl
