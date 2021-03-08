@@ -1,5 +1,3 @@
-import sys
-[sys.path.append(i) for i in ['.', '..','../']]
 import requests
 import json
 from decimal import Decimal
