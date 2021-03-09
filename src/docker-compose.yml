@@ -10,6 +10,12 @@ services:
     queue_etl:
         build:
             context: .
-            dockerfile: ./etl/Dockerfile
+            dockerfile: ./etl/queue_loader/Dockerfile
         container_name: stock-simulator-queue-etl
         image: stock-simulator-queue-etl
+    account_value_etl:
+        build:
+            context: .
+            dockerfile: ./etl/account_updater/Dockerfile
+        container_name: stock-simulator-account-value-etl
+        image: stock-simulator-account-value-etl

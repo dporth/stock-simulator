@@ -3,7 +3,7 @@ import sys
 from src.db.db_helper import DBHelper
 from src.db.models import StockPriceHistory
 from sqlalchemy import and_
-
+from datetime import datetime
 
 class StockPriceHistoryDAO():
 
@@ -28,11 +28,11 @@ class StockPriceHistoryDAO():
         with self._db.session_scope() as session:
             # Expire old record
             stock_history = session.query(StockPriceHistory).filter(and_(StockPriceHistory.stock_id==stock_id, StockPriceHistory.valid_to == None)).first()
-            if stock_history :
-                stock_history .valid_to = datetime.datetime.utcnow()
+            if stock_history:
+                stock_history.valid_to = datetime.utcnow()
                 session.commit()
         
         # Insert new record
-        return self.create_account_value(account_id, usd_account_amount) 
+        return self.create_stock_value(stock_id, value) 
 
             

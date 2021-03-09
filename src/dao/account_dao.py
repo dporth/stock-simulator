@@ -3,6 +3,8 @@ import sys
 from src.db.db_helper import DBHelper
 from src.db.models import Account, User, Stock, AccountValue
 from sqlalchemy import and_
+from datetime import datetime, date, time, timedelta
+from dateutil.relativedelta import relativedelta
 
 class AccountDAO():
 
@@ -14,8 +16,13 @@ class AccountDAO():
         with self._db.session_scope() as session:
             return session.query(Account, User, Stock, AccountValue).join(User).join(Stock).join(AccountValue, isouter=True).filter(AccountValue.valid_to == None)
 
+    def get_accounts_to_refresh(self):
+        """Returns all accounts that have an account value older than a day."""
+        with self._db.session_scope() as session:
+            return session.query(Account, AccountValue).join(AccountValue, isouter=True).filter(AccountValue.valid_from < (datetime.now() - relativedelta(days=-1)).date(), AccountValue.valid_to == None)
+
     def get_account_values(self, account_id, records_since_date):
-        """Returns all accounts with their users and stocks."""
+        """Returns account with its account value."""
         with self._db.session_scope() as session:
             return session.query(Account, AccountValue).join(AccountValue).filter(and_(AccountValue.account_id==account_id, AccountValue.valid_from >= records_since_date))
 

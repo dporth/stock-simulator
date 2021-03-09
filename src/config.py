@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # Stock market API token from system environment variable
 api_token = os.environ.get('MARKET_STACK_API_KEY')
 polygon_queue_api_key = os.environ.get('POLYGON_QUEUE_API_KEY')
+polygon_stock_price_updated_key = os.environ.get('POLYGON_STOCK_PRICE_UPDATER_KEY')
 
 auth0_domain = os.environ.get('AUTH0_DOMAIN')
 api_auth0_audience = os.environ.get('API_AUTH0_AUDIENCE')

@@ -4,4 +4,4 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
-python /src/etl/load_queue_stock_prices.py
+python /src/etl/account_updater/load_account_values.py

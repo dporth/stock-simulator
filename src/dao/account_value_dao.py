@@ -5,8 +5,6 @@ from src.db.db_helper import DBHelper
 from src.db.models import AccountValue
 from sqlalchemy import and_
 
-
-
 class AccountValueDAO():
 
     def __init__(self):
