@@ -50,4 +50,4 @@ RUN pip install -r requirements.txt
 RUN chmod a+x ./etl/uid_entrypoint.sh
 
 # Run
-ENTRYPOINT ["sh", "./etl/uid_entrypoint.sh"]
+ENTRYPOINT ["sh", "./etl/queue_loader/uid_entrypoint.sh"]
