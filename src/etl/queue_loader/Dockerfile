@@ -47,7 +47,7 @@ WORKDIR /src/
 RUN pip install -r requirements.txt
 
 
-RUN chmod a+x ./etl/uid_entrypoint.sh
+RUN chmod a+x ./etl/queue_loader/uid_entrypoint.sh
 
 # Run
 ENTRYPOINT ["sh", "./etl/queue_loader/uid_entrypoint.sh"]
