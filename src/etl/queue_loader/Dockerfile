@@ -12,7 +12,9 @@ ARG auth0_mgt_api_audience
 ARG auth0_mgt_client_id
 ARG auth0_mgt_client_secret
 ARG polygon_queue_api_key
+ARG polygon_stock_price_updater_key
 
+ENV POLYGON_STOCK_PRICE_UPDATER_KEY=$polygon_stock_price_updater_key
 ENV DATABASE_ACCOUNT=$database_account
 ENV DATABASE_PASSWORD=$database_password
 ENV DATABASE_SERVER=$database_server
