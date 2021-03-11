@@ -29,8 +29,9 @@ ENV POLYGON_QUEUE_API_KEY=$polygon_queue_api_key
 
 RUN apt-get update
 RUN apt install -y build-essential
-
+RUN apt-get install -y nginx
 RUN apt-get install -y curl
+# installing mssql odbc driver
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update
@@ -46,6 +47,22 @@ WORKDIR /src/
 
 RUN pip install -r requirements.txt
 RUN pip install uwsgi
+
+RUN useradd --no-create-home nginx
+
+RUN rm /etc/nginx/sites-enabled/default
+RUN rm -r /root/.cache
+
+COPY nginx.conf /etc/nginx/
+COPY uwsgi.ini /etc/uwsgi/
+
+RUN chgrp -R 0 /var/log/nginx && \
+    chmod -R g=u /var/log/nginx
+RUN chgrp -R 0 /var/lib/nginx && \
+    chmod -R g=u /var/lib/nginx
+RUN chgrp -R 0 /run && \
+    chmod -R g=u /run
+
 
 EXPOSE  5000
 

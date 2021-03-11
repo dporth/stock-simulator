@@ -4,4 +4,5 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
+service nginx start
 uwsgi --ini uwsgi.ini
