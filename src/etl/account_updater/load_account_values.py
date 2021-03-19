@@ -48,8 +48,8 @@ class LoadAccountValues():
 
 if __name__ == '__main__':
     etl = LoadAccountValues()
-    accounts = etl.get_account_stocks()
-    for i in range(1,6):
+    accounts = etl.get_account_stocks() 
+    for i in range(1,6): # Can only make 5 api calls per minute, so regardless of the number of stock accounts only deal with 5 at a time
         if i-1 >= len(accounts):
             break
         else:
