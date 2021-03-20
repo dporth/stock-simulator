@@ -16,7 +16,6 @@ def get_accounts():
 
     account_dao = AccountDAO()
     result = account_dao.get_accounts()
-    (result)
     return process_response(result, "")
 
 def get_accounts_by_user_id(user_id):
@@ -50,7 +49,6 @@ def get_account_by_id(account_id, json):
         account_value_filters = ""
     
     result = account_dao.get_account_by_id(account_id)
-    (result)
     if len(result.all()) != 0:
         return process_response(result, account_value_filters)
     else:
@@ -179,7 +177,6 @@ def historical_account_values(account_id, filters):
     query = account_dao.get_account_values(account_id, filters)
     history = []
     current_usd_amount = None
-    print(query)
     for row in query:
         current_row = {}
         current_row['valid_from'] = str(row.AccountValue.valid_from)
