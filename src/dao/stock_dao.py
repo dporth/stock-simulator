@@ -34,7 +34,6 @@ class StockDAO():
             session.flush()
             return marked_to_delete
 
-    # todo return stock id
     def create_stock(self, symbol):
         """Creates a record in the stock table with the symbol specified. Returns the stock id of the new record."""
         with self._db.session_scope() as session:

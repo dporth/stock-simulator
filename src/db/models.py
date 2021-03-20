@@ -73,6 +73,18 @@ class AccountValue(Base):
     usd_account_amount = Column(Integer)
     valid_from = Column(String, default=datetime.datetime.utcnow)
     valid_to = Column(String)
+    children = relationship("AccountValueQueueUpdated")
 
     def __repr__(self):
         return "<AccountValue(account_value_id='%s', account_id='%s', valid_from='%s', valid_to='%s', usd_account_amount='%s')>" % (self.account_value_id, self.account_id, self.valid_from, self.valid_to, self.usd_account_amount)
+
+class AccountValueQueueUpdated(Base):
+    __tablename__ = 'account_value_queue_updated'
+    __table_args__ = {'schema' : _db._schema}
+    queue_updated_id = Column(Integer, primary_key=True)
+    account_value_id = Column(Integer, ForeignKey(f'{_db._schema}.account_value.account_value_id'))
+    etl_date = Column(String, default=datetime.datetime.utcnow)
+
+
+    def __repr__(self):
+        return "<AccountValue(queue_updated_id='%s', account_value_id='%s', etl_date='%s')>" % (self.queue_updated_id, self.account_value_id, self.etl_date)

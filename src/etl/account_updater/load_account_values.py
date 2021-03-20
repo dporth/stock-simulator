@@ -19,7 +19,7 @@ class LoadAccountValues():
         self._account_value = AccountValueDAO()
 
     def get_account_stocks(self):
-        """Returns all accounts with their stock in a list of dictionaries."""
+        """Returns all accounts with their stocks in a list of dictionaries."""
         accounts = []
         result = self._account.get_accounts_to_refresh()
         for row in result:

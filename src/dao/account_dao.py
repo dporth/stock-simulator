@@ -1,8 +1,8 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
-from src.db.models import Account, User, Stock, AccountValue
-from sqlalchemy import and_
+from src.db.models import Account, User, Stock, AccountValue, AccountValueQueueUpdated
+from sqlalchemy import and_, or_
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -19,7 +19,7 @@ class AccountDAO():
     def get_accounts_to_refresh(self):
         """Returns all accounts that have an account value older than a day."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue).join(AccountValue, isouter=True).filter(AccountValue.valid_from < (datetime.now() + relativedelta(days=-1)).date(), AccountValue.valid_to == None)
+            return session.query(Account, AccountValue, AccountValueQueueUpdated).join(AccountValue, Account.account_id == AccountValue.account_id, isouter=True).join(AccountValueQueueUpdated, AccountValue.account_value_id == AccountValueQueueUpdated.account_value_id, isouter=True).filter(and_(or_(AccountValue.valid_from < (datetime.now() + relativedelta(days=-1)).date(), AccountValueQueueUpdated.account_value_id != None), AccountValue.valid_to == None))
 
     def get_account_values(self, account_id, records_since_date):
         """Returns account with its account value."""

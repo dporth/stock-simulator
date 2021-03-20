@@ -9,6 +9,8 @@ from src.dao.stock_price_history_dao import StockPriceHistoryDAO
 from src.dao.stock_dao import StockDAO
 from src.dao.account_dao import AccountDAO
 from src.dao.account_value_dao import AccountValueDAO
+from src.dao.account_value_queue_updated_dao import AccountValueQueueUpdatedDAO
+
 
 
 
@@ -19,6 +21,7 @@ class LoadQueueStockPrices():
         self._stock_history = StockPriceHistoryDAO()
         self._account = AccountDAO()
         self._account_value = AccountValueDAO()
+        self._queue_updated = AccountValueQueueUpdatedDAO()
 
     def pop_stock_queue(self):
         """Pops the next item in the queue and returns its id."""
@@ -41,15 +44,21 @@ class LoadQueueStockPrices():
         return requests.get(polygon_stock_eod_endpoint.format(ticker=symbol, key=polygon_queue_api_key))
 
     def update_stock_account_values(self, stock_id, eod_value):
-        """Creates a stock account value for each stock account that is for the specified stock_id."""
+        """
+            Creates a stock account value for each stock account that belongs to the specified stock_id. 
+            Returns the account value ids of all the accounts values created.
+        """
         # Create stock account values for stocks that just were popped from queue
         account_ids = []
+        value_ids_created = []
         result = self._account.get_accounts_by_stock(stock_id)
         for row in result:
             account = {"account_id": row.account_id, "usd_account_amount":row.share_amount* Decimal(eod_value)}
             account_ids.append(account)
         for each in account_ids:
-            self._account_value.expire_account_value(each["account_id"], each["usd_account_amount"])
+            value_ids_created.append(self._account_value.expire_account_value(each["account_id"], each["usd_account_amount"]))
+        return value_ids_created
+
 
 if __name__ == '__main__':
     etl = LoadQueueStockPrices()
@@ -60,7 +69,10 @@ if __name__ == '__main__':
             response = etl.request_eod_stock_values(symbol)
             eod_value = json.loads(response.text)['results'][0]['c']
             etl.update_stock_price_history(stock_id, eod_value)
-            etl.update_stock_account_values(stock_id, eod_value)
+            account_value_ids = etl.update_stock_account_values(stock_id, eod_value)
+            for each in account_value_ids:
+                etl._queue_updated.create_account_value_queue_updated(each)
+
 
 
 

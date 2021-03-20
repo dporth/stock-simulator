@@ -6,7 +6,7 @@ Then users will have access to end of day stock market data which shows the actu
 ![](./assets/data_model.png)  
 
 # Stocks
-The stocks supported by this application are found in the stockmarket.stock table. Every stock being used by a user in a stock account will have its current market price updated at end of day. This end of day price for a stock represents a single share and the data will be found in the stockmarket.stock_price_history table (which also is a type 2 table storing the history of stock prices). This application relys on the free tier of a stock market api. As so it cannot update all of the stocks at once rather only 5 per minute. So stocks that need to have a price update are added to the stockmarket.stock_price_queue table. A program is responsible for polling the queue table and obtaining the lastest end of day price for a stock.
+The stocks supported by this application are found in the stockmarket.stock table. Every stock being used by a user in a stock account will have its current market price updated at end of day. This end of day price for a stock represents a single share and the data will be found in the stockmarket.stock_price_history table (which also is a type 2 table storing the history of stock prices). At any point in time the stock price history table will store the previous days stock price. Stock simulator application relys on the free tier of a stock market api. As so it cannot update all of the stocks at once rather only 5 per minute. So stocks that need to have a price update are added to the stockmarket.stock_price_queue table. A program is responsible for polling the queue table and obtaining the lastest end of day price for a stock.
 
 # Getting Started
 ## Security
@@ -16,7 +16,7 @@ This API is secured using Auth0. You will need to create an account at Auth0 and
 This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, DATABASE_NAME, DATABASE_SCHEMA, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
 
 ## ETL
-To provide users with end of day stock market data which will show the acutal value of their investment stock accounts, the python scripts under /src/etl needs to be scheduled. 
+To provide users with end of day stock market data which will show the acutal value of their investment stock accounts, the python scripts under /src/etl needs to be scheduled.
 
 ### load_queue_stock_prices.py
 This script leverages the Polygon stock market API. So you will have to create an account on Polygon.io and obtain a personal API access token. This token needs to be set in an environment variable called POLYGON_QUEUE_API_KEY.
