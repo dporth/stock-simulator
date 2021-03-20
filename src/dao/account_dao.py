@@ -19,7 +19,7 @@ class AccountDAO():
     def get_accounts_to_refresh(self):
         """Returns all accounts that have an account value older than a day."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue).join(AccountValue, isouter=True).filter(AccountValue.valid_from < datetime.utcnow() - timedelta(days=1), AccountValue.valid_to == None)
+            return session.query(Account, AccountValue).join(AccountValue, isouter=True).filter(AccountValue.valid_from < (datetime.now() + relativedelta(days=-1)).date(), AccountValue.valid_to == None)
 
     def get_account_values(self, account_id, records_since_date):
         """Returns account with its account value."""
