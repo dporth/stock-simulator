@@ -5,6 +5,7 @@ from src.db.models import Account, User, Stock, AccountValue, AccountValueQueueU
 from sqlalchemy import and_, or_
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
+from src.dao.account_value_queue_updated_dao import AccountValueQueueUpdatedDAO
 
 class AccountDAO():
 
@@ -45,9 +46,14 @@ class AccountDAO():
         """Deletes the account record and all account values belonging to the specified account it. 
         Returns the account id of all records deleted.
         """
+        account_value_ids = []
         with self._db.session_scope() as session:
             accounts = session.query(Account.account_id).filter_by(account_id=account_id)
             for row in accounts:
+                account_value = session.query(AccountValue).filter(AccountValue.account_id==row.account_id)
+                for row in account_value:
+                    account_value_ids.append(row.account_value_id)
+                session.query(AccountValueQueueUpdated).filter(AccountValueQueueUpdated.account_value_id.in_(account_value_ids)).delete(synchronize_session=False)
                 account_values_del = session.query(AccountValue).filter(AccountValue.account_id==row.account_id).delete()
             account = session.query(Account).filter_by(account_id=account_id).delete()
             session.commit()

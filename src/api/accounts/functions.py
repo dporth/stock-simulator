@@ -4,6 +4,7 @@ from src.dao.account_value_dao import AccountValueDAO
 from src.dao.stock_dao import StockDAO
 from src.dao.stock_price_history_dao import StockPriceHistoryDAO
 from src.dao.stock_price_queue_dao import StockPriceQueueDAO
+from src.dao.account_value_queue_updated_dao import AccountValueQueueUpdatedDAO
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
@@ -65,6 +66,7 @@ def delete_account(account_id):
     error_response = {}
 
     account_dao = AccountDAO()
+    account_value_queue_updated = AccountValueQueueUpdatedDAO()
     result = account_dao.get_account_by_id(account_id)
     if len(result.all()) != 0:
         deleted_account = account_dao.delete_account(account_id)
