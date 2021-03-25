@@ -36,7 +36,7 @@ def get_account_by_id(account_id, json):
     error_response = {}
     account_dao = AccountDAO()
 
-    valid_filters = {"1W": (datetime.now() + relativedelta(days=-7)).date(), "1M": (datetime.now() + relativedelta(months=-1)).date(), "3M": (datetime.now() + relativedelta(months=-3)).date(), "1Y": (datetime.now() + relativedelta(years=-1)).date(), "3Y": (datetime.now() + relativedelta(years=-3)).date(), "5Y": (datetime.now() + relativedelta(years=-5)).date()}
+    valid_filters = {"1W": (datetime.now() + relativedelta(days=-7)), "1M": (datetime.now() + relativedelta(months=-1)), "3M": (datetime.now() + relativedelta(months=-3)), "1Y": (datetime.now() + relativedelta(years=-1)), "3Y": (datetime.now() + relativedelta(years=-3)), "5Y": (datetime.now() + relativedelta(years=-5))}
     if "filters" in json:
         if json["filters"] not in valid_filters.keys():
             error_response['message'] = "The requested filter was not found."
