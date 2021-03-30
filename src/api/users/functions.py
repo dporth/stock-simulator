@@ -1,4 +1,5 @@
 from src.dao.user_dao import UserDAO
+from src.dao.account_dao import AccountDAO
 from datetime import datetime
 from .resources.auth0_management import Auth0Management
 
@@ -39,10 +40,16 @@ def delete_user(user_id):
     auth0_management = Auth0Management()
 
     user_dao = UserDAO()
+    account_dao = AccountDAO()
+
     result = user_dao.get_user_by_id(user_id)
 
     if len(result.all()) != 0:
         auth0_response_code = auth0_management.delete_user(user_id) 
+        accounts = account_dao.get_accounts_by_user_id(user_id)
+        for row in accounts:
+            account_id = row.Account.account_id
+            account_dao.delete_account(account_id)
         if str(auth0_response_code) != "204":
             error_response['message'] = f"Failed to delete user in third party authentication service."
             error_response['code'] = auth0_response_code
