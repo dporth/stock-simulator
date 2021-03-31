@@ -60,10 +60,11 @@ class Account(Base):
     share_amount = Column(Integer)
     stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
     user_id = Column(String, ForeignKey(f'{_db._schema}.user.user_id'))
+    create_date = Column(String, default=datetime.datetime.utcnow)
     children = relationship("AccountValue")
 
     def __repr__(self):
-        return "<Account(account_id='%s', usd_amount='%s', share_amount='%s', stock_id='%s', user_id='%s')>" % (self.account_id, self.usd_amount, self.share_amount, self.stock_id, self.user_id)
+        return "<Account(account_id='%s', usd_amount='%s', share_amount='%s', stock_id='%s', user_id='%s', create_date='%s')>" % (self.account_id, self.usd_amount, self.share_amount, self.stock_id, self.user_id, self.create_date)
 
 class AccountValue(Base):
     __tablename__ = 'account_value'

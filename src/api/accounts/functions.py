@@ -199,6 +199,7 @@ def process_response(query, filters):
         account['account_id'] = row.Account.account_id
         account['usd_amount'] = str(row.Account.usd_amount)
         account['share_amount'] = str(row.Account.share_amount)
+        account['create_date'] = str(row.Account.create_date)
         for rows in query:
             account['historical_account_values'], current_usd_amount = historical_account_values(row.Account.account_id, filters)
             if current_usd_amount == None:
