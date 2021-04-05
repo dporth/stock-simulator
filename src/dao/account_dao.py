@@ -30,7 +30,7 @@ class AccountDAO():
     def get_accounts_by_user_id(self, user_id):
         """Returns all accounts belonging to the user id specified."""
         with self._db.session_scope() as session:
-            return session.query(Account, User, Stock).join(Stock).join(User).filter(User.user_id==user_id)
+            return session.query(Account, User, Stock, AccountValue).join(AccountValue, isouter=True).join(Stock).join(User).filter(User.user_id==user_id).order_by(Account.account_id.desc())
 
     def get_accounts_by_stock(self, stock_id):
         """Returns all accounts that are for a specific stock id."""
@@ -40,7 +40,7 @@ class AccountDAO():
     def get_account_by_id(self, account_id):
         """Returns all accounts with their address that have the account id provided."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue, User, Stock).join(AccountValue, isouter=True).filter(and_(Account.account_id==account_id, AccountValue.valid_to == None)).join(User).join(Stock)
+            return session.query(Account, AccountValue, User, Stock).join(AccountValue, isouter=True).filter(and_(Account.account_id==account_id)).join(User).join(Stock)
     
     def delete_account(self, account_id):
         """Deletes the account record and all account values belonging to the specified account it. 

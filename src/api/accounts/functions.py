@@ -189,28 +189,72 @@ def historical_account_values(account_id, filters):
             current_usd_amount = str(row.AccountValue.usd_account_amount)
     return history, current_usd_amount
 
+# def process_response(query, filters):
+#     """Takes a query and query filters at which point it formats the attributes in the query. Returns the formatted attributes."""
+#     response = {}
+#     accounts = []
+#     current_usd_account_value = None
+#     for row in query:
+#         account = {}
+#         account['account_id'] = row.Account.account_id
+#         account['usd_amount'] = str(row.Account.usd_amount)
+#         account['share_amount'] = str(row.Account.share_amount)
+#         account['create_date'] = str(row.Account.create_date)
+#         print(row)
+#         for rows in query:
+#             account['historical_account_values'], current_usd_amount = historical_account_values(row.Account.account_id, filters)
+#             if current_usd_amount == None:
+#                 current_usd_account_value = str(row.Account.usd_amount)
+#                 account['historical_account_values'] = []
+#             else:
+#                 current_usd_account_value = current_usd_amount
+#         account['current_usd_account_value'] = current_usd_account_value
+#         account['user'] = {'user_id': row.User.user_id}
+#         account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
+#         accounts.append(account)
+#     response['data'] = accounts
+#     response['timestamp'] = datetime.utcnow()
+#     return response
+
+
 def process_response(query, filters):
     """Takes a query and query filters at which point it formats the attributes in the query. Returns the formatted attributes."""
-    response = {}
+    account_dao = AccountDAO()
+    # query = account_dao.get_account_values(account_id, filters)
     accounts = []
-    current_usd_account_value = None
+    account = {}
+    response = {}
+    history = []
+    prev_account_id = None
+    current_usd_amount = None
     for row in query:
-        account = {}
-        account['account_id'] = row.Account.account_id
-        account['usd_amount'] = str(row.Account.usd_amount)
-        account['share_amount'] = str(row.Account.share_amount)
-        account['create_date'] = str(row.Account.create_date)
-        for rows in query:
-            account['historical_account_values'], current_usd_amount = historical_account_values(row.Account.account_id, filters)
-            if current_usd_amount == None:
-                current_usd_account_value = str(row.Account.usd_amount)
-                account['historical_account_values'] = []
-            else:
-                current_usd_account_value = current_usd_amount
-        account['current_usd_account_value'] = current_usd_account_value
-        account['user'] = {'user_id': row.User.user_id}
-        account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
-        accounts.append(account)
+        current_row = {}
+        if row.Account.account_id != prev_account_id:
+            prev_account_id = row.Account.account_id
+            account = {}
+            history = []
+        
+        if row.AccountValue.valid_to == None:
+            if row.AccountValue != None:
+                current_row['valid_from'] = str(row.AccountValue.valid_from)
+                current_row['valid_to'] = str(row.AccountValue.valid_to)
+                current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
+                history.append(current_row)
+            account['account_id'] = row.Account.account_id
+            account['usd_amount'] = str(row.Account.usd_amount)
+            account['share_amount'] = str(row.Account.share_amount)
+            account['create_date'] = str(row.Account.create_date)
+            account['current_usd_account_value'] = str(row.AccountValue.usd_account_amount)
+            account['user'] = {'user_id': row.User.user_id}
+            account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
+            account['historical_account_values'] = history
+            accounts.append(account)
+        else:
+            current_row['valid_from'] = str(row.AccountValue.valid_from)
+            current_row['valid_to'] = str(row.AccountValue.valid_to)
+            current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
+            history.append(current_row)
+        
     response['data'] = accounts
     response['timestamp'] = datetime.utcnow()
     return response
