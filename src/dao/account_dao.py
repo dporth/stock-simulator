@@ -30,7 +30,7 @@ class AccountDAO():
     def get_accounts_by_user_id(self, user_id):
         """Returns all accounts belonging to the user id specified."""
         with self._db.session_scope() as session:
-            return session.query(Account, User, Stock, AccountValue).join(AccountValue, isouter=True).join(Stock).join(User).filter(User.user_id==user_id).order_by(Account.account_id.desc())
+            return session.query(Account, User, Stock, AccountValue).join(AccountValue, isouter=True).join(Stock).join(User).filter(User.user_id==user_id).order_by(Account.account_id.desc(), AccountValue.valid_to.desc())
 
     def get_accounts_by_stock(self, stock_id):
         """Returns all accounts that are for a specific stock id."""
