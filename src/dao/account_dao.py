@@ -20,7 +20,7 @@ class AccountDAO():
     def get_accounts_to_refresh(self):
         """Returns all accounts that have an account value older than a day."""
         with self._db.session_scope() as session:
-            return session.query(Account, AccountValue, AccountValueQueueUpdated, StockPriceHistory).join(StockPriceHistory, StockPriceHistory.stock_id == Account.stock_id).join(AccountValue, Account.account_id == AccountValue.account_id, isouter=True).join(AccountValueQueueUpdated, AccountValue.account_value_id == AccountValueQueueUpdated.account_value_id, isouter=True).filter(and_(or_(AccountValue.valid_from < (datetime.now() + relativedelta(hours=-12)), AccountValueQueueUpdated.account_value_id != None, and_(StockPriceHistory.valid_from < (datetime.now() + relativedelta(hours=-12)), StockPriceHistory.valid_to == None)), AccountValue.valid_to == None))
+            return session.query(Account, AccountValue, AccountValueQueueUpdated, StockPriceHistory).join(StockPriceHistory, StockPriceHistory.stock_id == Account.stock_id).join(AccountValue, Account.account_id == AccountValue.account_id, isouter=True).join(AccountValueQueueUpdated, AccountValue.account_value_id == AccountValueQueueUpdated.account_value_id, isouter=True).filter(and_(or_(AccountValue.valid_from < (datetime.now() + relativedelta(hours=-12)), AccountValueQueueUpdated.account_value_id != None, and_(StockPriceHistory.valid_from < (datetime.now() + relativedelta(hours=-2)), StockPriceHistory.valid_to == None)), AccountValue.valid_to == None))
 
     def get_account_values(self, account_id, records_since_date):
         """Returns account with its account value."""
@@ -62,7 +62,7 @@ class AccountDAO():
     def create_account(self, usd_amount, share_amount, stock_id, user_id):
         """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""        
         with self._db.session_scope() as session:
-            account = Account(usd_amount=usd_amount, share_amount=share_amount, stock_id=stock_id, user_id=user_id)
+            account = Account(usd_amount=usd_amount, share_amount=share_amount, stock_id=stock_id, user_id=user_id, create_date=(datetime.now() + relativedelta(hours=-12)))
             session.add(account)
             session.flush()
             return account.account_id
