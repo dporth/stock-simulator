@@ -1,7 +1,7 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
 from src.db.db_helper import DBHelper
-from src.db.models import Account, User, Stock, AccountValue, AccountValueQueueUpdated
+from src.db.models import Account, User, Stock, AccountValue, AccountValueQueueUpdated, StockPriceHistory
 from sqlalchemy import and_, or_
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
