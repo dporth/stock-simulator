@@ -233,28 +233,39 @@ def process_response(query, filters):
             prev_account_id = row.Account.account_id
             account = {}
             history = []
-        
-        if row.AccountValue.valid_to == None:
-            if row.AccountValue != None:
+
+        if row.AccountValue != None:
+            if row.AccountValue.valid_to == None:
                 current_row['valid_from'] = str(row.AccountValue.valid_from)
                 current_row['valid_to'] = str(row.AccountValue.valid_to)
                 current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
                 history.append(current_row)
+                account['account_id'] = row.Account.account_id
+                account['usd_amount'] = str(row.Account.usd_amount)
+                account['share_amount'] = str(row.Account.share_amount)
+                account['create_date'] = str(row.Account.create_date)
+                account['current_usd_account_value'] = str(row.AccountValue.usd_account_amount)
+                account['user'] = {'user_id': row.User.user_id}
+                account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
+
+                account['historical_account_values'] = history
+                accounts.append(account)
+            else:
+                current_row['valid_from'] = str(row.AccountValue.valid_from)
+                current_row['valid_to'] = str(row.AccountValue.valid_to)
+                current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
+                history.append(current_row)
+        else:
             account['account_id'] = row.Account.account_id
             account['usd_amount'] = str(row.Account.usd_amount)
             account['share_amount'] = str(row.Account.share_amount)
             account['create_date'] = str(row.Account.create_date)
-            account['current_usd_account_value'] = str(row.AccountValue.usd_account_amount)
+            account['current_usd_account_value'] = str(row.Account.usd_amount)
             account['user'] = {'user_id': row.User.user_id}
             account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
 
             account['historical_account_values'] = history
             accounts.append(account)
-        else:
-            current_row['valid_from'] = str(row.AccountValue.valid_from)
-            current_row['valid_to'] = str(row.AccountValue.valid_to)
-            current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
-            history.append(current_row)
         
     response['data'] = accounts
     response['timestamp'] = datetime.utcnow()
