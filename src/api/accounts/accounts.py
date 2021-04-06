@@ -36,7 +36,7 @@ def accounts(user_id):
             return jsonify(response), 200
 
 @accounts_bp.route('/accounts/<int:id>', methods=['GET', 'DELETE'])
-#@requires_auth
+@requires_auth
 def get_account(id):
     """
     GET    - returns the accounts with the account id

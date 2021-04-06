@@ -247,6 +247,7 @@ def process_response(query, filters):
             account['current_usd_account_value'] = str(row.AccountValue.usd_account_amount)
             account['user'] = {'user_id': row.User.user_id}
             account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
+
             account['historical_account_values'] = history
             accounts.append(account)
         else:
