@@ -37,7 +37,7 @@ def accounts(user_id):
 
 @accounts_bp.route('/accounts/<int:id>', methods=['GET', 'DELETE'])
 @requires_auth
-def get_account(id):
+def get_account(user_id, id):
     """
     GET    - returns the accounts with the account id
     DELETE - deletes the account specified by the account id
