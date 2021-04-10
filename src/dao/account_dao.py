@@ -59,10 +59,10 @@ class AccountDAO():
             session.commit()
             return account_id
 
-    def create_account(self, usd_amount, share_amount, stock_id, user_id):
+    def create_account(self, share_price, share_amount, stock_id, user_id):
         """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""        
         with self._db.session_scope() as session:
-            account = Account(usd_amount=usd_amount, share_amount=share_amount, stock_id=stock_id, user_id=user_id, create_date=(datetime.now() + relativedelta(hours=-12)))
+            account = Account(share_price=share_price, share_amount=share_amount, stock_id=stock_id, user_id=user_id, create_date=(datetime.now() + relativedelta(hours=-12)))
             session.add(account)
             session.flush()
             return account.account_id

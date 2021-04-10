@@ -56,7 +56,7 @@ class Account(Base):
     __tablename__ = 'account'
     __table_args__ = {'schema' : _db._schema}
     account_id = Column(Integer, primary_key=True)
-    usd_amount = Column(Integer)
+    share_price = Column(Integer)
     share_amount = Column(Integer)
     stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
     user_id = Column(String, ForeignKey(f'{_db._schema}.user.user_id'))
@@ -64,7 +64,7 @@ class Account(Base):
     children = relationship("AccountValue")
 
     def __repr__(self):
-        return "<Account(account_id='%s', usd_amount='%s', share_amount='%s', stock_id='%s', user_id='%s', create_date='%s')>" % (self.account_id, self.usd_amount, self.share_amount, self.stock_id, self.user_id, self.create_date)
+        return "<Account(account_id='%s', share_price='%s', share_amount='%s', stock_id='%s', user_id='%s', create_date='%s')>" % (self.account_id, self.share_price, self.share_amount, self.stock_id, self.user_id, self.create_date)
 
 class AccountValue(Base):
     __tablename__ = 'account_value'

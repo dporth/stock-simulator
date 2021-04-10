@@ -47,7 +47,7 @@ def get_account_by_id(account_id, json):
         else:
             account_value_filters = valid_filters[json["filters"]]
     else:       
-        account_value_filters = ""
+        account_value_filters = datetime.min
     
     result = account_dao.get_account_by_id(account_id)
     if len(result.all()) != 0:
@@ -93,19 +93,19 @@ def create_account(user_id, json):
     stock_price_history_dao = StockPriceHistoryDAO()
     stock_price_queue_dao = StockPriceQueueDAO()
 
-    if not required_keys(json, ['usd_amount', 'share_amount', 'symbol']):
+    if not required_keys(json, ['share_price', 'share_amount', 'symbol']):
         error_response['message'] = "Request body is missing required key value pairs. Invalid request."
         error_response['code'] = '400'
         response['error'] = error_response
         response['timestamp'] = datetime.utcnow()
         return response
 
-    usd_amount = json['usd_amount']
+    share_price = json['share_price']
     share_amount = json['share_amount']
     symbol = json['symbol']
 
     # Ensure usd and share amount are not strings
-    if not isinstance(usd_amount, (int, float)) or not isinstance(share_amount, (int, float)):
+    if not isinstance(share_price, (int, float)) or not isinstance(share_amount, (int, float)):
         # not a number
         error_response['message'] = "The request json contains a string when a number is expected. Invalid request."
         error_response['code'] = '400'
@@ -140,7 +140,7 @@ def create_account(user_id, json):
 
 
     # Create account
-    new_account = account_dao.create_account(usd_amount, share_amount, stock_id, user_id)
+    new_account = account_dao.create_account(share_price, share_amount, stock_id, user_id)
 
     # Check if most up to date stock price is present
     result = stock_price_history_dao.get_stock_value(stock_id).first()
@@ -157,7 +157,8 @@ def create_account(user_id, json):
     successful_response['account_id'] = new_account
     successful_response['stock_id'] = stock_id
     successful_response['user_id'] = user_id
-    successful_response['usd_amount'] = usd_amount
+    successful_response['usd_amount'] = share_price * share_amount
+    successful_response['share_price'] = share_price
     successful_response['share_amount'] = share_amount
     response['data'] = successful_response
     response['timestamp'] = datetime.utcnow()
@@ -241,7 +242,8 @@ def process_response(query, filters):
                 current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
                 history.append(current_row)
                 account['account_id'] = row.Account.account_id
-                account['usd_amount'] = str(row.Account.usd_amount)
+                account['usd_amount'] = str(row.Account.share_price * row.Account.share_amount)
+                account['share_price'] = str(row.Account.share_price)
                 account['share_amount'] = str(row.Account.share_amount)
                 account['create_date'] = str(row.Account.create_date)
                 account['current_usd_account_value'] = str(row.AccountValue.usd_account_amount)
@@ -251,16 +253,18 @@ def process_response(query, filters):
                 account['historical_account_values'] = history
                 accounts.append(account)
             else:
-                current_row['valid_from'] = str(row.AccountValue.valid_from)
-                current_row['valid_to'] = str(row.AccountValue.valid_to)
-                current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
-                history.append(current_row)
+                if row.AccountValue.valid_from >= filters:
+                    current_row['valid_from'] = str(row.AccountValue.valid_from)
+                    current_row['valid_to'] = str(row.AccountValue.valid_to)
+                    current_row['usd_account_value'] = str(row.AccountValue.usd_account_amount)
+                    history.append(current_row)
         else:
             account['account_id'] = row.Account.account_id
-            account['usd_amount'] = str(row.Account.usd_amount)
+            account['usd_amount'] = str(row.Account.share_price * row.Account.share_amount)
+            account['share_price'] = str(row.Account.share_price)
             account['share_amount'] = str(row.Account.share_amount)
             account['create_date'] = str(row.Account.create_date)
-            account['current_usd_account_value'] = str(row.Account.usd_amount)
+            account['current_usd_account_value'] = str(row.Account.share_price * row.Account.share_amount)
             account['user'] = {'user_id': row.User.user_id}
             account['stock'] = {'symbol': row.Stock.symbol, 'stock_id': row.Stock.stock_id}
 
