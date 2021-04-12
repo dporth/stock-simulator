@@ -27,7 +27,7 @@ def get_accounts_by_user_id(user_id):
     account_dao = AccountDAO()
 
     result = account_dao.get_accounts_by_user_id(user_id)
-    return process_response(result, "")
+    return process_response(result, datetime.min)
 
 def get_account_by_id(account_id, json):
     """Returns account specified by the provided account id."""
