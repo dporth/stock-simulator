@@ -13,7 +13,7 @@ class StockPriceHistoryDAO():
     def get_stock_value(self, stock_id):
         """Returns the latest value for the given stock id."""
         with self._db.session_scope() as session:
-            return session.query(StockPriceHistory).filter(and_(StockPriceHistory.stock_id==stock_id, AccountValue.valid_from >= (datetime.now() + relativedelta(days=-1)), StockPriceHistory.valid_to == None))
+            return session.query(StockPriceHistory).filter(and_(StockPriceHistory.stock_id==stock_id, StockPriceHistory.valid_from >= (datetime.now() + relativedelta(days=-1)), StockPriceHistory.valid_to == None))
     
     def create_stock_value(self, stock_id, value):
         """Adds the specified stock id with the value to the stock price history table."""
