@@ -3,8 +3,6 @@ This stock simulator will allow users to simulate stock purchases based off the 
 Users will be able to set how many shares of a specific stock they wish to purchase and the price they wish to purchase those shares at.
 Then users will have access to end of day stock market data which shows the actual value of their investment based off the real stock market prices.
 
-![](./assets/data_model.png)  
-
 # Stocks
 The stocks supported by this application are found in the stockmarket.stock table. Every stock being used by a user in a stock account will have its current market price updated at end of day. This end of day price for a stock represents a single share and the data will be found in the stockmarket.stock_price_history table (which also is a type 2 table storing the history of stock prices). At any point in time the stock price history table will store the previous days stock price. Stock simulator application relys on the free tier of a stock market api. As so it cannot update all of the stocks at once rather only 5 per minute. So stocks that need to have a price update are added to the stockmarket.stock_price_queue table. A program is responsible for polling the queue table and obtaining the lastest end of day price for a stock.
 
