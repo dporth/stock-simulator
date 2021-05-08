@@ -1,46 +1,38 @@
 import sys
 [sys.path.append(i) for i in ['.', '..','../../', '../db/']]
-from src.db.db_helper import DBHelper
+from src.db.db_helper import db_session
 from src.db.models import Stock
 
 class StockDAO():
 
-    def __init__(self):
-        self._db = DBHelper()
-
     def get_stocks(self):
         """Returns all stocks."""
-        with self._db.session_scope() as session:
-            return session.query(Stock)
+        return db_session.query(Stock)
 
     def get_stock_by_symbol(self, symbol):
         """Returns all stocks that have the symbol provided."""
-        with self._db.session_scope() as session:
-            return session.query(Stock).filter_by(symbol=symbol)
+        return db_session.query(Stock).filter_by(symbol=symbol)
 
     def get_stock_by_id(self, stock_id):
         """Returns all stocks that have the stock id provided."""
-        with self._db.session_scope() as session:
-            return session.query(Stock).filter_by(stock_id=stock_id)
+        return db_session.query(Stock).filter_by(stock_id=stock_id)
 
     def delete_stock(self, symbol):
         """Deletes all records in the stock table that have the symbol specified. Returns the stock id of all records deleted."""
-        with self._db.session_scope() as session:
-            marked_to_delete = []
-            results = session.query(Stock.stock_id).filter_by(symbol=symbol)
-            for row in results:
-                marked_to_delete.append(row[0])
-            stock = session.query(Stock).filter_by(symbol=symbol).delete()
-            session.flush()
-            return marked_to_delete
+        marked_to_delete = []
+        results = db_session.query(Stock.stock_id).filter_by(symbol=symbol)
+        for row in results:
+            marked_to_delete.append(row[0])
+        stock = db_session.query(Stock).filter_by(symbol=symbol).delete()
+        db_session.flush()
+        return marked_to_delete
 
     def create_stock(self, symbol):
         """Creates a record in the stock table with the symbol specified. Returns the stock id of the new record."""
-        with self._db.session_scope() as session:
-            stock = Stock(symbol=symbol)
-            session.add(stock)
-            session.flush()
-            return stock.stock_id
+        stock = Stock(symbol=symbol)
+        db_session.add(stock)
+        db_session.flush()
+        return stock.stock_id
 
 if __name__ == "__main__":
     stock = StockDAO()

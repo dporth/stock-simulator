@@ -4,14 +4,11 @@ from sqlalchemy.orm import relationship
 import datetime
 import sys
 [sys.path.append(i) for i in ['.', '..','../../']]
-from .db_helper import DBHelper
-
-Base = declarative_base()
-_db = DBHelper()
+from src.db.db_helper import Base, schema
 
 class Stock(Base):
     __tablename__ = 'stock'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     stock_id = Column(Integer, primary_key=True)
     symbol = Column(String)
     children = relationship("Account")
@@ -22,9 +19,9 @@ class Stock(Base):
 
 class StockPriceQueue(Base):
     __tablename__ = 'stock_price_queue'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     queue_id = Column(Integer, primary_key=True)
-    stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
+    stock_id = Column(Integer, ForeignKey(f'{schema}.stock.stock_id'))
     etl_date = Column(String, default=datetime.datetime.utcnow)
 
     def __repr__(self):
@@ -32,9 +29,9 @@ class StockPriceQueue(Base):
 
 class StockPriceHistory(Base):
     __tablename__ = 'stock_price_history'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     stock_price_history_id = Column(Integer, primary_key=True)
-    stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
+    stock_id = Column(Integer, ForeignKey(f'{schema}.stock.stock_id'))
     historical_usd_price = Column(Integer)
     valid_from = Column(String, default=datetime.datetime.utcnow)
     valid_to = valid_to = Column(String)
@@ -44,7 +41,7 @@ class StockPriceHistory(Base):
 
 class User(Base):
     __tablename__ = 'user'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     user_id = Column(String, primary_key=True)
     identifier = Column(String)
     children = relationship("Account")
@@ -54,12 +51,12 @@ class User(Base):
 
 class Account(Base):
     __tablename__ = 'account'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     account_id = Column(Integer, primary_key=True)
     share_price = Column(Integer)
     share_amount = Column(Integer)
-    stock_id = Column(Integer, ForeignKey(f'{_db._schema}.stock.stock_id'))
-    user_id = Column(String, ForeignKey(f'{_db._schema}.user.user_id'))
+    stock_id = Column(Integer, ForeignKey(f'{schema}.stock.stock_id'))
+    user_id = Column(String, ForeignKey(f'{schema}.user.user_id'))
     create_date = Column(String, default=datetime.datetime.utcnow)
     children = relationship("AccountValue")
 
@@ -68,9 +65,9 @@ class Account(Base):
 
 class AccountValue(Base):
     __tablename__ = 'account_value'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     account_value_id = Column(Integer, primary_key=True)
-    account_id = Column(Integer, ForeignKey(f'{_db._schema}.account.account_id'))
+    account_id = Column(Integer, ForeignKey(f'{schema}.account.account_id'))
     usd_account_amount = Column(Integer)
     valid_from = Column(String, default=datetime.datetime.utcnow)
     valid_to = Column(String)
@@ -81,9 +78,9 @@ class AccountValue(Base):
 
 class AccountValueQueueUpdated(Base):
     __tablename__ = 'account_value_queue_updated'
-    __table_args__ = {'schema' : _db._schema}
+    __table_args__ = {'schema' : schema}
     queue_updated_id = Column(Integer, primary_key=True)
-    account_value_id = Column(Integer, ForeignKey(f'{_db._schema}.account_value.account_value_id'))
+    account_value_id = Column(Integer, ForeignKey(f'{schema}.account_value.account_value_id'))
     etl_date = Column(String, default=datetime.datetime.utcnow)
 
 
