@@ -54,5 +54,5 @@ class AccountDAO():
         """Creates a record in the account table with the parameters specified. Returns the account id of the record created."""        
         account = Account(share_price=share_price, share_amount=share_amount, stock_id=stock_id, user_id=user_id, create_date=(datetime.now() + relativedelta(hours=-12)))
         db_session.add(account)
-        db_session.flush()
+        db_session.commit()
         return account.account_id
