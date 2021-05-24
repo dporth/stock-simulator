@@ -14,7 +14,7 @@ This API is secured using Auth0. You will need to create an account at Auth0 and
 This program depends on a SQL Server backend. A instance of a SQL Server database must be running. The DDL to set up the schema and tables that this application depends on is located under /assets. Run this SQL before running the API. Next update DATABASE_SERVER, DATABASE_ACCOUNT, DATABASE_NAME, DATABASE_SCHEMA, and DATABASE_PASSWORD environment variables on your host machine with your SQL server details.
 
 ## ETL
-To provide users with end of day stock market data which will show the acutal value of their investment stock accounts, the python scripts under /src/etl needs to be scheduled.
+To provide users with end of day stock market data which will show the acutal value of their investment stock accounts, the python scripts under /src/etl need to be scheduled.
 
 ### load_queue_stock_prices.py
 This script leverages the Polygon stock market API. So you will have to create an account on Polygon.io and obtain a personal API access token. This token needs to be set in an environment variable called POLYGON_QUEUE_API_KEY.
