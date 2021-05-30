@@ -19,7 +19,7 @@ To provide users with end of day stock market data which will show the acutal va
 ### load_queue_stock_prices.py
 This script leverages the Polygon stock market API. So you will have to create an account on Polygon.io and obtain a personal API access token. This token needs to be set in an environment variable called POLYGON_QUEUE_API_KEY.
 
-## load_account_values.py
+### load_account_values.py
 This script leverages the Polygon stock market API. So you will have to create an account on Polygon.io and obtain a personal API access token. This token needs to be set in an environment variable called POLYGON_STOCK_PRICE_UPDATER_KEY.
 
 ## Docker
