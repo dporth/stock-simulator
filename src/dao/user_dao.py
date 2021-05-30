@@ -22,7 +22,7 @@ class UserDAO():
             account_values_del = db_session.query(AccountValue).filter(AccountValue.account_id==row.account_id).delete()
             accounts_del = db_session.query(Account).filter(and_(Account.user_id==user_id, Account.account_id==row.account_id)).delete()
         users_del = db_session.query(User).filter_by(user_id=user_id).delete()
-        db_session.flush()
+        db_session.commit()
         return user_id
 
     def update_user(self, user_id, key, value):
@@ -39,5 +39,5 @@ class UserDAO():
         """Creates a record in the user table. Returns the user id"""
         user = User(user_id=user_id, identifier=identifier)
         db_session.add(user)
-        db_session.flush()
+        db_session.commit()
         return user.user_id

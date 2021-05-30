@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 _db_config = config['mssql']
 schema = _db_config['schema']
-engine = sa.create_engine(f"mssql+pyodbc://{_db_config['user']}:{_db_config['password']}@{_db_config['server']}/{_db_config['database']}?driver=ODBC Driver 17 for SQL Server?Trusted_Connection=yes’")
+engine = sa.create_engine(f"mssql+pyodbc://{_db_config['user']}:{_db_config['password']}@{_db_config['server']}/{_db_config['database']}?driver=ODBC+Driver+17+for+SQL+Server")
 db_session = scoped_session(sessionmaker(bind=engine))
         #Base.metadata.drop_all(bind=self._engine)
         #Base.metadata.create_all(bind=self._engine)

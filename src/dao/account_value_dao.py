@@ -18,14 +18,14 @@ class AccountValueDAO():
         for row in results:
             marked_to_delete.append(row[0])
         account_value = db_session.query(AccountValue).filter_by(account_value_id=account_value_id).delete()
-        db_session.flush()
+        db_session.commit()
         return marked_to_delete
 
     def create_account_value(self, account_id, usd_account_amount):
         """Creates a record in the account value table with the parameters specified. Returns the account value id of the record created."""
         account_value = AccountValue(account_id=account_id, usd_account_amount=usd_account_amount)
         db_session.add(account_value)
-        db_session.flush()
+        db_session.commit()
         return account_value.account_value_id
 
     def expire_account_value(self, account_id, usd_account_amount):

@@ -24,14 +24,14 @@ class StockDAO():
         for row in results:
             marked_to_delete.append(row[0])
         stock = db_session.query(Stock).filter_by(symbol=symbol).delete()
-        db_session.flush()
+        db_session.commit()
         return marked_to_delete
 
     def create_stock(self, symbol):
         """Creates a record in the stock table with the symbol specified. Returns the stock id of the new record."""
         stock = Stock(symbol=symbol)
         db_session.add(stock)
-        db_session.flush()
+        db_session.commit()
         return stock.stock_id
 
 if __name__ == "__main__":
